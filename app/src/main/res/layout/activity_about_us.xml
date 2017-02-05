@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_about_us"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:fillViewport="true"
+    android:background="@color/orangeyBrown"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="tm.shker.mohamed.chickengrill.Activities.AboutUsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:id="@+id/rlAboutUsWrapper">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="קצת עלינו"
+            android:textAlignment="center"
+            android:textColor="@color/orange"
+            android:textSize="25sp"
+            android:textStyle="bold|italic"
+            android:id="@+id/tvAboutUsTitle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:layout_below="@+id/tvAboutUsTitle"
+            android:id="@+id/tvAboutUs"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:id="@+id/rlWorkHoursWrapper">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שעות משלוחים"
+            android:textAlignment="center"
+            android:textColor="@color/orange"
+            android:textSize="25sp"
+            android:textStyle="bold|italic"
+            android:id="@+id/tvWorkHoursTitle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:layout_below="@+id/tvWorkHoursTitle"
+            android:id="@+id/tvWorkHours"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="3"
+        android:id="@+id/rlDeliveryAreasWrapper">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="אזורי משלוחים"
+            android:textAlignment="center"
+            android:textColor="@color/orange"
+            android:textSize="25sp"
+            android:textStyle="bold|italic"
+            android:id="@+id/tvDeliveryAreasTitle"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
+            android:orientation="horizontal"
+            android:layout_below="@+id/tvDeliveryAreasTitle"
+            android:id="@+id/llDeliveryattributesWrapper">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="זמן משלוח"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/orange"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="מינימום משלוח"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/orange"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="דמי משלוח"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/orange"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="אזורי חלוקה"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/orange"
+                android:textStyle="bold"
+               />
+
+        </LinearLayout>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/llDeliveryattributesWrapper"
+            android:id="@+id/rvDeliveryAreas"
+             />
+
+
+    </RelativeLayout>
+</LinearLayout>

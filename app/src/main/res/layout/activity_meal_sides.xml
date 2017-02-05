@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_meal_sides"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="tm.shker.mohamed.chickengrill.Activities.MealSidesActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr"
+        android:background="@color/orangeyBrown"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llMealSidesWrapper"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cvBigMealDisplay"
+                android:background="@color/black"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                card_view:cardCornerRadius="10dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="2dp"
+
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rlMealDetailsWrapper"
+                    android:layoutDirection="ltr">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        android:orientation="horizontal"
+                        android:background="@color/black"
+                        android:layout_below="@+id/ivBigMealImage">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvBigMealPrice"
+                            android:layout_weight="2"
+                            android:layout_alignParentLeft="true"
+                            android:layoutDirection="ltr"
+                            android:textSize="@dimen/my_big_text"
+                            android:textStyle="italic"
+                            android:background="@color/black"
+                            android:textColor="@color/orange"
+                            android:text="140₪"
+                            android:textAlignment="center"
+
+                             />
+
+                        <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvBigMealName"
+                        android:layout_weight="6"
+                        android:layoutDirection="ltr"
+                        android:textSize="25dp"
+                        android:textStyle="italic"
+                        android:textColor="@color/orange"
+                        android:background="@color/black"
+                        android:text="צ'יקן סלט"
+                        android:layout_alignBaseline="@+id/tvBigMealPrice"
+                        android:layout_alignBottom="@+id/tvBigMealPrice"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toRightOf="@+id/tvBigMealPrice"
+                        android:layout_toEndOf="@+id/tvBigMealPrice" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:id="@+id/ivBigMealImage"
+                        android:src="@drawable/chicken_gril_logo"
+                        android:scaleType="fitXY"
+                        android:background="@color/black"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/llMealPossibleModifications"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:layoutDirection="rtl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealpossibleModificationsTitle"
+                    android:textSize="@dimen/my_medium_text"
+                    android:textColor="@color/orange"
+                    android:text="תוספת לבחירה:"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/llMealSalads"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:layoutDirection="rtl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealSaladsTitle"
+                    android:textSize="@dimen/my_medium_text"
+                    android:textColor="@color/orange"
+                    android:text="תוספת לבחירה:"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr"/>
+
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlMealSide"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layoutDirection="rtl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealSideTitle"
+                    android:textSize="@dimen/my_medium_text"
+                    android:textColor="@color/orange"
+                    android:text="תוספת לבחירה:"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr"/>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvMealSideTitle"
+                    android:id="@+id/rgSides"
+                    android:orientation="vertical"
+                    android:layoutDirection="rtl">
+                </RadioGroup>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlMealSidesDrink"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layoutDirection="rtl">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealSidesDrinkTitle"
+                    android:textSize="@dimen/my_medium_text"
+                    android:textColor="@color/orange"
+                    android:text="תוספת לבחירה:"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr"/>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvMealSidesDrinkTitle"
+                    android:id="@+id/rgDrinks"
+                    android:orientation="vertical"
+                    android:layoutDirection="rtl">
+                </RadioGroup>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/llMealSauces"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:layoutDirection="rtl"
+                tools:showIn="@layout/activity_meal_sides">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealSaucesTitle"
+                    android:textSize="@dimen/my_medium_text"
+                    android:textColor="@color/orange"
+                    android:text="תוספת לבחירה:"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr" />
+
+
+            </LinearLayout>
+
+                <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlMealNotes"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMealNotesTitle"
+                    android:text="הערות לפריט :"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:layoutDirection="ltr"
+                    />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/etMealNotes"
+                    android:textSize="@dimen/my_medium_text"
+                    android:layout_below="@+id/tvMealNotesTitle"
+                    android:text=" "
+                    android:maxLength="100"
+                    android:textColor="@color/white"
+                    android:layoutDirection="ltr"/>
+
+
+            </RelativeLayout>
+
+              <RelativeLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="10dp">
+
+                  <Button
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_centerInParent="true"
+                      android:id="@+id/btnAddToCart"
+                      android:drawableLeft="@drawable/ic_add_shopping_cart"
+                      android:text="@string/add_to_cart"
+                      android:scaleType="fitXY"
+                      android:textSize="15dp"
+                      android:textStyle="bold"
+                      android:background="@color/orange"
+                      android:textDirection="rtl"
+                      />
+
+              </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

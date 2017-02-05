@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+      >
+
+    <android.support.v7.widget.CardView
+        android:layout_height="130dp"
+        android:layout_width="wrap_content"
+        card_view:cardCornerRadius="15dp"
+        android:id="@+id/cvMealOption"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        card_view:cardBackgroundColor="#000"
+        card_view:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
+            android:id="@+id/rlFoodOptionWrapper"
+
+            >
+
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="עסקית בורגר צ'יקן"
+                android:textColor="@color/orange"
+                android:id="@+id/tvMealName"
+                android:maxLines="1"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/ivMealImage"
+                android:paddingLeft="3dp"
+                android:src="@drawable/cg_icon"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/tvMealCost"
+                android:layout_alignParentBottom="true" />
+
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="מוגש בלחמניה עם חסה, עגבניה, מלפפון חמוץ ובצל סגול, לצד תוספת ושתיה לבחירה"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:id="@+id/tvMealDetails"
+                android:clickable="false"
+                android:focusable="false"
+                android:textIsSelectable="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/tvMealName">
+            </TextView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="₪30"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:id="@+id/tvMealCost"
+                android:layout_alignParentTop="true"
+                android:layout_alignLeft="@+id/ibAddToCard"
+                android:layout_alignStart="@+id/ibAddToCard"
+                android:layout_toLeftOf="@+id/tvMealName"
+                android:layout_toStartOf="@+id/tvMealName" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/ibAddToCard"
+                android:scaleType="fitXY"
+                android:background="@color/orange"
+                android:src="@drawable/ic_add_shopping_cart"
+                android:layout_alignBottom="@+id/tvMealDetails"
+                android:layout_toLeftOf="@+id/tvMealDetails"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/tvMealDetails" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/white"></RelativeLayout>
+</LinearLayout>
+
+

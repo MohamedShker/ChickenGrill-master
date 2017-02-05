@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "621794533440",
+    "firebase_url": "https://chicken-grill-1e923.firebaseio.com",
+    "project_id": "chicken-grill-1e923",
+    "storage_bucket": "chicken-grill-1e923.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621794533440:android:255326a3d4ccbecc",
+        "android_client_info": {
+          "package_name": "tm.shker.mohamed.chickengrill"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "621794533440-npmve0a65lp9dotp1jtit53lv4co9h2l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tm.shker.mohamed.chickengrill",
+            "certificate_hash": "BF0CD1EBA7EA8A4A6DF90041DFD0B348783F5976"
+          }
+        },
+        {
+          "client_id": "621794533440-eougtqabv2ofopftti4lm1gbncosmbb8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvzmhSWPS32fO4L4qaLzPCiwUIMPPipPo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "621794533440-eougtqabv2ofopftti4lm1gbncosmbb8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

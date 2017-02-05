@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="FIRST_RB" type="id">first_rb</item>
+
+    //id's for linearLayouts of the combinations meal sides activity:
+    <item name="FIRST_MEAL_POSSIBLE_MODIFICATIONS" type="id">first_meal_possible_modifications</item>
+    <item name="FIRST_MEAL_SAUCES_AND_SALADS" type="id">first_meal_sauces_and_salads</item>
+
+    <item name="SECOND_MEAL_POSSIBLE_MODIFICATIONS" type="id">second_meal_possible_modifications</item>
+    <item name="SECOND_MEAL_SAUCES_AND_SALADS" type="id">second_meal_sauces_and_salads</item>
+
+    <item name="THIRD_MEAL_POSSIBLE_MODIFICATIONS" type="id">third_meal_possible_modifications</item>
+    <item name="THIRD_MEAL_SAUCES_AND_SALADS" type="id">third_meal_sauces_and_salads</item>
+
+    <item name="FOURTH_MEAL_POSSIBLE_MODIFICATIONS" type="id">fourth_meal_possible_modifications</item>
+    <item name="FOURTH_MEAL_SAUCES_AND_SALADS" type="id">fourth_meal_sauces_and_salads</item>
+
+</resources>
