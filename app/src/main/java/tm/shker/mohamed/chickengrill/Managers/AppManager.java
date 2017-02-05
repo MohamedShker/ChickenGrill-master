@@ -21,4 +21,8 @@ public class AppManager extends Application {
         //for offline mode( saving data on the device disk):
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
+
+    //AFTER LOGIN
+// TODO: 05/02/2017 init mealorder indixing after succesful login
+
 }

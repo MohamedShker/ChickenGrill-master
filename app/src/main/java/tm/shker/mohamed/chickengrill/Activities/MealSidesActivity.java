@@ -1,6 +1,8 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
+import android.app.Application;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +23,16 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import tm.shker.mohamed.chickengrill.Managers.AppManager;
 import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.Meal;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
@@ -45,12 +53,15 @@ public class MealSidesActivity extends AppCompatActivity {
     private String mealType;
 
     ArrayList<String> possibleModifications, salads, sides, drinks, sauces;
+    private  int mealOrderIndex = 0;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
 
 
     @Override
@@ -62,6 +73,7 @@ public class MealSidesActivity extends AppCompatActivity {
         initViews();
         initMealSides(mealToDisplay);
 
+      //  AppManager app = (AppManager) getApplication();
 
         if(mealType.equals("עסקיות בורגרים") || mealType.equals("עסקיות")) {
             displayMeal();
@@ -80,7 +92,7 @@ public class MealSidesActivity extends AppCompatActivity {
         btnAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddToCart(v);
+                AddToCart();
             }
         });
 
@@ -90,7 +102,7 @@ public class MealSidesActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private void AddToCart(View v) {
+    private void AddToCart() {
         MealOrder currMealOrder = new MealOrder();
         currMealOrder.setNumOfDuplicationOfTheMeal(1);
         Meal orderedMeal = new Meal();
@@ -140,6 +152,7 @@ public class MealSidesActivity extends AppCompatActivity {
             Toast.makeText(this, combinationMealSides.toString(), Toast.LENGTH_LONG).show();
         }
 
+        uploadToDataBase(currMealOrder);
     }
 
 
@@ -656,6 +669,23 @@ public class MealSidesActivity extends AppCompatActivity {
             linearLayout.addView(checkBox);
 
         }
+    }
+
+    private void uploadToDataBase(MealOrder mealOrder){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // TODO: 05/02/2017 add un indexing to the eal orders when uploading to database. index must be managed in user level. save in appmanager class after login
+        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
+        mealOrdersREF.setValue(mealOrder).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MealSidesActivity.this, "המנה הוספה בהצלחה לסל", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MealSidesActivity.this, "כישלון בהוספת המנה לסל, אנא בדוק את חיבור האינטרנט שלך", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

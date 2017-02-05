@@ -9,6 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 import tm.shker.mohamed.chickengrill.Adapters.MealAdapter;
@@ -38,7 +45,9 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: 19/01/2017 real time database for recieving meal orders from curr user
+        // TODO: 19/01/2017 real time database for recieving mealOrders from curr user
+        updateMealOrders();
+
         //set adapter to the recyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvMealOrders);
         adapter = new MealOrderAdapter(mealOrders,this);
@@ -46,4 +55,38 @@ public class ShoppingCartActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void updateMealOrders(){
+        ArrayList<MealOrder> currUserMealOrders = new ArrayList<MealOrder>();
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // TODO: 05/02/2017 implement listener functions
+        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
+        mealOrdersREF.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        this.mealOrders = currUserMealOrders;
+    }
 }
