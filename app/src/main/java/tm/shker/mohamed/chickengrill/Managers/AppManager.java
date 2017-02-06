@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class AppManager extends Application {
+    private int mealOrderIndex;
 
     @Override
     public void onCreate() {
@@ -22,7 +23,17 @@ public class AppManager extends Application {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    //AFTER LOGIN
-// TODO: 05/02/2017 init mealorder indixing after succesful login
+    //AFTER LOGIN (init mealOrder indexing after successful login -for saving to firebase-):
+    public void initUserLevelAttributes(){
+        mealOrderIndex = 0;
+    }
+
+    public int getMealOrderIndex() {
+        return mealOrderIndex;
+    }
+
+    public void incIndex(){
+        mealOrderIndex = mealOrderIndex + 1;
+    }
 
 }

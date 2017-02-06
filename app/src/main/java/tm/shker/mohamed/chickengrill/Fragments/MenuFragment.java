@@ -51,7 +51,7 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_menu, container, false);
 
-        //get wich kind of meals to dis[lay
+        //get which kind of meals to dis[lay
          mealType = getArguments().getString(Constants.MEAL_TYPE);
 
         //fetch data once:

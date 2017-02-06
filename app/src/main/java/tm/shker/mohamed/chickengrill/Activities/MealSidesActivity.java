@@ -53,7 +53,8 @@ public class MealSidesActivity extends AppCompatActivity {
     private String mealType;
 
     ArrayList<String> possibleModifications, salads, sides, drinks, sauces;
-    private  int mealOrderIndex = 0;
+    AppManager appManager;
+
 
 
     /**
@@ -103,6 +104,9 @@ public class MealSidesActivity extends AppCompatActivity {
     }
 
     private void AddToCart() {
+        //for saving meal orders and indixing them in the firebase database
+        appManager = (AppManager) getApplication();
+
         MealOrder currMealOrder = new MealOrder();
         currMealOrder.setNumOfDuplicationOfTheMeal(1);
         Meal orderedMeal = new Meal();
@@ -672,12 +676,16 @@ public class MealSidesActivity extends AppCompatActivity {
     }
 
     private void uploadToDataBase(MealOrder mealOrder){
+        //get the index of the user curr meal order.
+        String index = String.valueOf(appManager.getMealOrderIndex());
+
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // TODO: 05/02/2017 add un indexing to the eal orders when uploading to database. index must be managed in user level. save in appmanager class after login
-        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
+      // add un indexing to the Meal orders when uploading to database. index must be managed in user level. saved in AppManager class after login
+        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid).child(index);
         mealOrdersREF.setValue(mealOrder).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                appManager.incIndex();
                 Toast.makeText(MealSidesActivity.this, "המנה הוספה בהצלחה לסל", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {

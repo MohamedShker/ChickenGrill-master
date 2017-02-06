@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.ArrayList;
 
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
@@ -20,11 +22,11 @@ import tm.shker.mohamed.chickengrill.R;
  */
 
 public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.MealOrderViewHolder>{
-    private ArrayList<MealOrder> data;
+    private ArrayList<DataSnapshot> data;
     private LayoutInflater inflater;
     private Context context;
 
-    public MealOrderAdapter(ArrayList<MealOrder> data, Context context) {
+    public MealOrderAdapter(ArrayList<DataSnapshot> data, Context context) {
         this.data = data;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -39,13 +41,13 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
     @Override
     public void onBindViewHolder(final MealOrderViewHolder holder, int position) {
 
-        MealOrder currMealOrder = data.get(position);
+        MealOrder currMealOrder = data.get(position).getValue(MealOrder.class);
 
         holder.fabActionMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.numOfDuplication = holder.numOfDuplication -1;
-                holder.etNumOfDuplications.setText(holder.numOfDuplication);
+                holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
             }
         });
 
@@ -53,7 +55,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             @Override
             public void onClick(View v) {
                 holder.numOfDuplication = holder.numOfDuplication + 1;
-                holder.etNumOfDuplications.setText(holder.numOfDuplication);
+                holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
             }
         });
 
@@ -66,8 +68,8 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
 
         holder.tvMealOrderName.setText(currMealOrder.getOrderedMeal().get(0).getMealName());
         holder.tvMealOrderIngredients.setText(currMealOrder.getOrderedMeal().get(0).getMealIngredients());
-        holder.tvMealOrderCost.setText(currMealOrder.getOrderedMeal().get(0).getMealCost());
-        holder.etNumOfDuplications.setText(holder.numOfDuplication);
+        holder.tvMealOrderCost.setText(currMealOrder.getOrderedMeal().get(0).getMealCost() + "₪");
+        holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
     }
 
     @Override

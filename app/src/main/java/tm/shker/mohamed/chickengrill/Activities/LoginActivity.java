@@ -43,6 +43,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import tm.shker.mohamed.chickengrill.Managers.AppManager;
 import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.User;
 import tm.shker.mohamed.chickengrill.R;
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callBackManager;
     private TextInputLayout emailWrapper;
     private TextInputLayout passWrapper;
+    private AppManager appManager;//for initiating the user level attrbute mealOrderIndex(used in meal sides activity to save meal orders to firbase dataBase.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
         prepareFacebookBTN();
         prepareGoogleBTN();
         Picasso.with(this).load(R.drawable.chicken_gril_logo).error(R.mipmap.ic_launcher).into(logo);
+
+        //init index to 0 for indexing meal order data and saving it in firebase database
+        appManager = (AppManager) getApplication();
     }
 
     private void prepareFacebookBTN() {
@@ -89,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 showProgress("Logging you in","Please wait");
+                appManager.initUserLevelAttributes();
                 String token = loginResult.getAccessToken().getToken();
                 AuthCredential credential = FacebookAuthProvider.getCredential(token);
 
@@ -142,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginWithGoogle() {
         showProgress("Logging you in","Please wait");
+        appManager.initUserLevelAttributes();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.RC_GOOGLE_SIGN_IN);
     }
@@ -181,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        appManager.initUserLevelAttributes();
                         gotoMain();
                     }
                 })
@@ -204,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         saveUser(authResult);
+                        appManager.initUserLevelAttributes();
                         gotoMain();
                     }
                 })
