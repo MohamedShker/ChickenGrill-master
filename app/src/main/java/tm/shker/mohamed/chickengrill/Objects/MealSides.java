@@ -78,13 +78,32 @@ public class MealSides implements Serializable{
 
     @Override
     public String toString() {
-        return "MealSidesActivity{" +
-                "possibleModifications=" + possibleModifications +
-                ", drinks=" + drinks +
-                ", sides=" + sides +
-                ", salad=" + salad +
-                ", Sauces=" + Sauces +
-                ", mealNotes='" + mealNotes + '\'' +
-                '}';
+        StringBuilder myMealSides = new StringBuilder();
+        if(possibleModifications.size() != 0){
+            myMealSides.append(" שינויים אפשריים :");
+           myMealSides.append(possibleModifications);
+        }
+        if(drinks.size() != 0){
+            myMealSides.append(" שתיה :");
+            myMealSides.append(drinks);
+        }
+        if(sides.size() != 0){
+            myMealSides.append(" תוספת :");
+            myMealSides.append(sides);
+        }
+        if(salad.size() != 0){
+            myMealSides.append(" סלטים :");
+            myMealSides.append(salad);
+        }
+        if(Sauces.size() != 0){
+            myMealSides.append(" רטבים :");
+            myMealSides.append(Sauces);
+        }
+        if(!mealNotes.equals(" ")){
+            myMealSides.append(" הערות למנה :");
+            myMealSides.append(mealNotes);
+        }
+
+        return myMealSides.toString();
     }
 }

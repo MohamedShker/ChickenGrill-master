@@ -16,7 +16,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="b132188569e7131f7b6550a7bd5cf1cf91e7fa3f">
+        sha1="708276c8cdc540f269077ed2c7817ccddc9fcb24">
         <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_353fb7e1b3d178d9d4a14b2b98ca6786b3977288\classes.dex" />
     </item>
     <item
@@ -97,7 +97,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="2672394c6a850b7a1665fd14b95b1f9fb5f3488a">
+        sha1="ad700b61afb1a3708ca2593c77f290de757e427b">
         <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_a992f3970b61f4786644973f1e12f887e13fce0a\classes.dex" />
     </item>
     <item
@@ -291,21 +291,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\exploded-aar\com.google.firebase\firebase-common\9.4.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="24.0.2"
-        sha1="18b5697c65c4fe5b7381613b8b8ae9ac52e26fa7">
-        <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.firebase-firebase-common-9.4.0_e83843cf5bf3af75e96b7c4fc016544577df11cb\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\24.2.0\jars\libs\internal_impl-24.2.0.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
         sha1="60d7b23621d31e6f42f4f76f16af467e57a20cda">
         <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-24.2.0_d7bc46c145b34d6f48526602abc99f7b96c47d27\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\exploded-aar\com.google.firebase\firebase-common\9.4.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="18b5697c65c4fe5b7381613b8b8ae9ac52e26fa7">
+        <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.firebase-firebase-common-9.4.0_e83843cf5bf3af75e96b7c4fc016544577df11cb\classes.dex" />
     </item>
     <item
         is-multidex="true"

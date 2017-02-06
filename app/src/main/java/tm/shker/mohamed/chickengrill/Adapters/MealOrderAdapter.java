@@ -10,10 +10,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import tm.shker.mohamed.chickengrill.Objects.Meal;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
 import tm.shker.mohamed.chickengrill.R;
 
@@ -46,8 +49,16 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
         holder.fabActionMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.numOfDuplication = holder.numOfDuplication -1;
-                holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+                if(holder.numOfDuplication != 0) {
+                    holder.numOfDuplication = holder.numOfDuplication - 1;
+                    holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+
+                    if(holder.numOfDuplication == 1){
+                        // TODO: 06/02/2017   numOfDuplication = 1 and the user asks to dec to 0 ==> ask the user if he realy wants to delete this meal order and act accordingly.
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
+                    }
+                }
             }
         });
 
@@ -55,7 +66,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             @Override
             public void onClick(View v) {
                 holder.numOfDuplication = holder.numOfDuplication + 1;
-                holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+                holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
             }
         });
 
@@ -67,9 +78,17 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
         });
 
         holder.tvMealOrderName.setText(currMealOrder.getOrderedMeal().get(0).getMealName());
-        holder.tvMealOrderIngredients.setText(currMealOrder.getOrderedMeal().get(0).getMealIngredients());
+
+        //prepare user choices string to display:
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<Meal> orderedMeals = currMealOrder.getOrderedMeal();
+        for (Meal meal: orderedMeals) {
+            stringBuilder.append(" { "+meal.getMealSides().toString() + " } ");
+        }
+        holder.tvMealOrderIngredients.setText(stringBuilder.toString());
+        if(currMealOrder.getOrderedMeal().get(0).getMealType().equals("תוספות"))
         holder.tvMealOrderCost.setText(currMealOrder.getOrderedMeal().get(0).getMealCost() + "₪");
-        holder.etNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+        holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
     }
 
     @Override
@@ -79,8 +98,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
 
     public class MealOrderViewHolder extends RecyclerView.ViewHolder{
         FloatingActionButton fabActionAdd, fabActionMinus;
-        TextView tvMealOrderName, tvMealOrderIngredients, tvMealOrderCost;
-        EditText etNumOfDuplications;
+        TextView tvMealOrderName, tvMealOrderIngredients, tvMealOrderCost, tvNumOfDuplications;
         ImageButton ibEditMealOrder;
         int numOfDuplication;
 
@@ -92,7 +110,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             tvMealOrderName = (TextView) v.findViewById(R.id.tvMealOrderName);
             tvMealOrderIngredients = (TextView) v.findViewById(R.id.tvMealOrderIngredients);
             tvMealOrderCost = (TextView) v.findViewById(R.id.tvMealOrderCost);
-            etNumOfDuplications = (EditText) v.findViewById(R.id.etNumOfDuplications);
+            tvNumOfDuplications = (TextView) v.findViewById(R.id.tvNumOfDuplications);
             ibEditMealOrder = (ImageButton) v.findViewById(R.id.ibEditMealOrder);
             numOfDuplication = 1;
 

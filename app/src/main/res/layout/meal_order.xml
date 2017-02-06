@@ -115,8 +115,8 @@
                     android:layout_margin="5dp"
                     card_view:srcCompat="@drawable/ic_action_add" />
 
-                <EditText
-                    android:id="@+id/etNumOfDuplications"
+                <TextView
+                    android:id="@+id/tvNumOfDuplications"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="1"
@@ -134,7 +134,7 @@
                     android:layout_height="40dp"
                     android:src="@drawable/ic_action_minus"
                     android:scaleType="centerCrop"
-                    android:layout_below="@+id/etNumOfDuplications"
+                    android:layout_below="@+id/tvNumOfDuplications"
                     android:layout_alignParentRight="true"
                     android:layout_margin="5dp"
                     card_view:srcCompat="@drawable/ic_action_minus" />
