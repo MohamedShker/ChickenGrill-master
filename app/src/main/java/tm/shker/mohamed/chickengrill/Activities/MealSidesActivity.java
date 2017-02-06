@@ -103,6 +103,46 @@ public class MealSidesActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    private void initViews() {
+        //for meal big display:
+        ivBigMealImage = (ImageView) findViewById(R.id.ivBigMealImage);
+        tvBigMealName = (TextView) findViewById(R.id.tvBigMealName);
+        tvBigMealPrice = (TextView) findViewById(R.id.tvBigMealPrice);
+
+        //for displaying drinks options:
+        rlMealSidesDrink = (RelativeLayout) findViewById(R.id.rlMealSidesDrink);
+        tvMealSidesDrinkTitle = (TextView) findViewById(R.id.tvMealSidesDrinkTitle);
+        rgDrinks = (RadioGroup) findViewById(R.id.rgDrinks);
+
+
+        //for displaying sides options:
+        rlMealSide = (RelativeLayout) findViewById(R.id.rlMealSide);
+        tvMealSideTitle = (TextView) findViewById(R.id.tvMealSideTitle);
+        rgSides = (RadioGroup) findViewById(R.id.rgSides);
+
+        //for displaying possibleModifications options:
+        llMealPossibleModifications = (LinearLayout) findViewById(R.id.llMealPossibleModifications);
+        tvMealPossibleModificationsTitle = (TextView) findViewById(R.id.tvMealpossibleModificationsTitle);
+
+        //for displaying salad options:
+        llMealSalads = (LinearLayout) findViewById(R.id.llMealSalads);
+        tvMealSaladsTitle = (TextView) findViewById(R.id.tvMealSaladsTitle);
+
+        //for displaying sauces options:
+        llMealSauces = (LinearLayout) findViewById(R.id.llMealSauces);
+        tvMealSaucesTitle = (TextView) findViewById(R.id.tvMealSaucesTitle);
+
+        //for receiving the meal notes from the customer:
+        rlMealNotes = (RelativeLayout) findViewById(R.id.rlMealNotes);
+        etMealNotes = (EditText) findViewById(R.id.etMealNotes);
+
+        //main linear layout (parent)
+        llMealSidesWrapper = (LinearLayout) findViewById(R.id.llMealSidesWrapper);
+
+        //add to cart button
+        btnAddToCart = (Button) findViewById(R.id.btnAddToCart);
+    }
+
     private void AddToCart() {
         //for saving meal orders and indixing them in the firebase database
         appManager = (AppManager) getApplication();
@@ -129,6 +169,12 @@ public class MealSidesActivity extends AppCompatActivity {
         }
         else if(mealType.equals("תוספות")){
             orderdMealSides = getSide();
+
+            //set chosen cost for displaying in shopping card activity:
+            String chosen = orderdMealSides.getPossibleModifications().get(0);
+            int sideChosenCoast = getSideChosenCoast(chosen);
+            orderedMeal.setMealCost(String.valueOf(sideChosenCoast));
+
             orderedMeal.setMealSides(orderdMealSides);
             currMealOrder.getOrderedMeal().add(orderedMeal);
             Toast.makeText(this, orderdMealSides.toString(), Toast.LENGTH_SHORT).show();
@@ -159,6 +205,10 @@ public class MealSidesActivity extends AppCompatActivity {
         uploadToDataBase(currMealOrder);
     }
 
+    private int getSideChosenCoast(String chosen) {
+        int i = Integer.parseInt(chosen.replaceAll("[\\D]", ""));
+        return i;
+    }
 
     private MealSides getMeal() {
         MealSides ans = new MealSides();
@@ -210,9 +260,11 @@ public class MealSidesActivity extends AppCompatActivity {
                 }
             }
             if(radioGroup !=null) {
-                ans.getPossibleModifications().add(getCheckedRadioButton(radioGroup));
+                String chosen = getCheckedRadioButton(radioGroup);
+                ans.getPossibleModifications().add(chosen);
             }
         }
+
 
         //get meal notes:
         ans.setMealNotes(etMealNotes.getText().toString());
@@ -349,45 +401,7 @@ public class MealSidesActivity extends AppCompatActivity {
     }
 
 
-    private void initViews() {
-        //for meal big display:
-        ivBigMealImage = (ImageView) findViewById(R.id.ivBigMealImage);
-        tvBigMealName = (TextView) findViewById(R.id.tvBigMealName);
-        tvBigMealPrice = (TextView) findViewById(R.id.tvBigMealPrice);
 
-        //for displaying drinks options:
-        rlMealSidesDrink = (RelativeLayout) findViewById(R.id.rlMealSidesDrink);
-        tvMealSidesDrinkTitle = (TextView) findViewById(R.id.tvMealSidesDrinkTitle);
-        rgDrinks = (RadioGroup) findViewById(R.id.rgDrinks);
-
-
-        //for displaying sides options:
-        rlMealSide = (RelativeLayout) findViewById(R.id.rlMealSide);
-        tvMealSideTitle = (TextView) findViewById(R.id.tvMealSideTitle);
-        rgSides = (RadioGroup) findViewById(R.id.rgSides);
-
-        //for displaying possibleModifications options:
-        llMealPossibleModifications = (LinearLayout) findViewById(R.id.llMealPossibleModifications);
-        tvMealPossibleModificationsTitle = (TextView) findViewById(R.id.tvMealpossibleModificationsTitle);
-
-        //for displaying salad options:
-        llMealSalads = (LinearLayout) findViewById(R.id.llMealSalads);
-        tvMealSaladsTitle = (TextView) findViewById(R.id.tvMealSaladsTitle);
-
-        //for displaying sauces options:
-        llMealSauces = (LinearLayout) findViewById(R.id.llMealSauces);
-        tvMealSaucesTitle = (TextView) findViewById(R.id.tvMealSaucesTitle);
-
-        //for receiving the meal notes from the customer:
-        rlMealNotes = (RelativeLayout) findViewById(R.id.rlMealNotes);
-        etMealNotes = (EditText) findViewById(R.id.etMealNotes);
-
-        //main linear layout (parent)
-        llMealSidesWrapper = (LinearLayout) findViewById(R.id.llMealSidesWrapper);
-
-        //add to cart button
-        btnAddToCart = (Button) findViewById(R.id.btnAddToCart);
-    }
 
     private void displayBigMeal(String mealName, String mealCost, String mealURLImage) {
         Picasso.with(this).

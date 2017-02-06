@@ -44,7 +44,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
     @Override
     public void onBindViewHolder(final MealOrderViewHolder holder, int position) {
 
-        MealOrder currMealOrder = data.get(position).getValue(MealOrder.class);
+        final MealOrder currMealOrder = data.get(position).getValue(MealOrder.class);
 
         holder.fabActionMinus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +52,9 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
                 if(holder.numOfDuplication != 0) {
                     holder.numOfDuplication = holder.numOfDuplication - 1;
                     holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+                    //set new cost:
+                    int newCost = holder.numOfDuplication * Integer.parseInt(currMealOrder.getOrderedMeal().get(0).getMealCost());
+                    holder.tvMealOrderCost.setText(String.valueOf(newCost) + "₪");
 
                     if(holder.numOfDuplication == 1){
                         // TODO: 06/02/2017   numOfDuplication = 1 and the user asks to dec to 0 ==> ask the user if he realy wants to delete this meal order and act accordingly.
@@ -67,6 +70,9 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             public void onClick(View v) {
                 holder.numOfDuplication = holder.numOfDuplication + 1;
                 holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
+                //set new cost:
+                int newCost = holder.numOfDuplication * Integer.parseInt(currMealOrder.getOrderedMeal().get(0).getMealCost());
+                holder.tvMealOrderCost.setText(String.valueOf(newCost) + "₪");
             }
         });
 
@@ -86,8 +92,9 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             stringBuilder.append(" { "+meal.getMealSides().toString() + " } ");
         }
         holder.tvMealOrderIngredients.setText(stringBuilder.toString());
-        if(currMealOrder.getOrderedMeal().get(0).getMealType().equals("תוספות"))
+
         holder.tvMealOrderCost.setText(currMealOrder.getOrderedMeal().get(0).getMealCost() + "₪");
+
         holder.tvNumOfDuplications.setText(String.valueOf(holder.numOfDuplication));
     }
 
