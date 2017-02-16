@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity  {
     private ViewPager viewPager;
     private TabLayout tabs;
     private ImageView background;
+    private String uid;
+    private DatabaseReference mealOrdersREF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +78,10 @@ public class MainActivity extends AppCompatActivity  {
         //set background
         background = (ImageView)findViewById(R.id.ivMainActivityBackground);
         Picasso.with(this).load(R.drawable.main_activity_background).error(R.mipmap.ic_launcher).into(background);
+
+        //init uid
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
 
     }
 
@@ -131,5 +139,6 @@ public class MainActivity extends AppCompatActivity  {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }

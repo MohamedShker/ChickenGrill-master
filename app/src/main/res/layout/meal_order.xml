@@ -103,6 +103,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginLeft="1dp"
                 android:layout_gravity="center_horizontal"
                 android:layoutDirection="rtl">
 
@@ -115,18 +116,6 @@
                     android:layout_alignParentRight="true"
                     card_view:srcCompat="@drawable/ic_action_add" />
 
-                <TextView
-                    android:id="@+id/tvNumOfDuplications"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:text="1"
-                    android:textAlignment="center"
-                    android:textSize="30dp"
-                    android:textColor="@color/white"
-                    android:layout_below="@+id/fabActionAdd"
-                    android:layout_alignParentRight="true"
-                  />
-
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fabActionMinus"
@@ -138,6 +127,18 @@
                     android:layout_alignParentRight="true"
                     card_view:srcCompat="@drawable/ic_action_minus" />
 
+                <TextView
+                    android:id="@+id/tvNumOfDuplications"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textSize="30dp"
+                    android:textColor="@color/white"
+                    android:layout_below="@+id/fabActionAdd"
+                    android:layout_alignParentRight="true"
+                     />
+
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -145,7 +146,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/orangeyBrown">
+        android:background="@color/white">
 
     </RelativeLayout>
 </LinearLayout>

@@ -53,17 +53,6 @@ public class MealSidesActivity extends AppCompatActivity {
     private String mealType;
 
     ArrayList<String> possibleModifications, salads, sides, drinks, sauces;
-    AppManager appManager;
-
-
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +86,6 @@ public class MealSidesActivity extends AppCompatActivity {
             }
         });
 
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void initViews() {
@@ -144,9 +129,6 @@ public class MealSidesActivity extends AppCompatActivity {
     }
 
     private void AddToCart() {
-        //for saving meal orders and indixing them in the firebase database
-        appManager = (AppManager) getApplication();
-
         MealOrder currMealOrder = new MealOrder();
         currMealOrder.setNumOfDuplicationOfTheMeal(1);
         Meal orderedMeal = new Meal();
@@ -690,16 +672,12 @@ public class MealSidesActivity extends AppCompatActivity {
     }
 
     private void uploadToDataBase(MealOrder mealOrder){
-        //get the index of the user curr meal order.
-        String index = String.valueOf(appManager.getMealOrderIndex());
-
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
       // add un indexing to the Meal orders when uploading to database. index must be managed in user level. saved in AppManager class after login
-        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid).child(index);
+        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid).push();
         mealOrdersREF.setValue(mealOrder).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                appManager.incIndex();
                 Toast.makeText(MealSidesActivity.this, "המנה הוספה בהצלחה לסל", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -710,39 +688,4 @@ public class MealSidesActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("MealSides Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 }

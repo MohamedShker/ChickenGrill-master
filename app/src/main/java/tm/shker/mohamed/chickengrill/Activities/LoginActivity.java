@@ -94,7 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 showProgress("Logging you in","Please wait");
-                appManager.initUserLevelAttributes();
                 String token = loginResult.getAccessToken().getToken();
                 AuthCredential credential = FacebookAuthProvider.getCredential(token);
 
@@ -148,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginWithGoogle() {
         showProgress("Logging you in","Please wait");
-        appManager.initUserLevelAttributes();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.RC_GOOGLE_SIGN_IN);
     }
@@ -188,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        appManager.initUserLevelAttributes();
                         gotoMain();
                     }
                 })
@@ -212,7 +209,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         saveUser(authResult);
-                        appManager.initUserLevelAttributes();
                         gotoMain();
                     }
                 })

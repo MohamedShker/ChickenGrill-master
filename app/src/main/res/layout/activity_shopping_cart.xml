@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/orangeyBrown"
+    android:background="@color/white"
     tools:context="tm.shker.mohamed.chickengrill.Activities.ShoppingCartActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -23,14 +23,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_shopping_cart" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabShoppingCartActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/ic_action_creditcard" />
+
+    <include layout="@layout/content_shopping_cart" />
 
 </android.support.design.widget.CoordinatorLayout>

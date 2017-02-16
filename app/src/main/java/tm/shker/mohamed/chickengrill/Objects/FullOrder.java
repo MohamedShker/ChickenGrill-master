@@ -9,18 +9,20 @@ import java.util.ArrayList;
 
 public class FullOrder implements Serializable {
     private User user;//user that ordered the meal.
-    private DeliveryArea deliveryArea;
+    private boolean withDelivery;
     private ArrayList<MealOrder> mealOrders;
     private int sum;
 
     public FullOrder() {
+        mealOrders = new ArrayList<MealOrder>();
+        sum = 0;
     }
 
-    public FullOrder(User user, DeliveryArea deliveryArea) {
+    public FullOrder(User user, boolean withDelivery, ArrayList<MealOrder> mealOrders, int sum) {
         this.user = user;
-        this.deliveryArea = deliveryArea;
-        this.mealOrders = new ArrayList<MealOrder>();
-        sum = 0;
+        this.withDelivery = withDelivery;
+        this.mealOrders = mealOrders;
+        this.sum = sum;
     }
 
     private int calculateSUM() {
@@ -34,8 +36,8 @@ public class FullOrder implements Serializable {
             sum += CurrMealOrderTotalCost;
         }
 
-        if(deliveryArea != null)
-        sum +=Integer.parseInt(deliveryArea.getDeliveryCost());
+        if(withDelivery)
+        sum += 10;
 
         return sum;
     }
@@ -56,12 +58,12 @@ public class FullOrder implements Serializable {
         return sum;
     }
 
-    public DeliveryArea getDeliveryArea() {
-        return deliveryArea;
+    public boolean isWithDelivery() {
+        return withDelivery;
     }
 
-    public void setDeliveryArea(DeliveryArea deliveryArea) {
-        this.deliveryArea = deliveryArea;
+    public void setWithDelivery(boolean withDelivery) {
+        this.withDelivery = withDelivery;
     }
 
     @Override

@@ -3,11 +3,20 @@ package tm.shker.mohamed.chickengrill.Managers;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import tm.shker.mohamed.chickengrill.Activities.MealSidesActivity;
 import tm.shker.mohamed.chickengrill.Objects.Meal;
+import tm.shker.mohamed.chickengrill.Objects.MealOrder;
 
 
 /**
@@ -44,7 +53,25 @@ public class AddToCartListener implements View.OnClickListener  {
     }
 
     private void addToCard() {
-        // TODO: 23/01/2017
+        MealOrder mealOrder = new MealOrder();
+        mealOrder.getOrderedMeal().add(meal);
+        uploadToDataBase(mealOrder);
+    }
+
+    private void uploadToDataBase(MealOrder mealOrder){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid).push();
+        mealOrdersREF.setValue(mealOrder).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(context, "המנה הוספה בהצלחה לסל", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "כישלון בהוספת המנה לסל, אנא בדוק את חיבור האינטרנט שלך", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

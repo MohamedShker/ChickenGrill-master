@@ -38,6 +38,7 @@
             android:name=".Activities.ShoppingCartActivity"
             android:label="@string/title_activity_shopping_cart"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.AboutUsActivity"

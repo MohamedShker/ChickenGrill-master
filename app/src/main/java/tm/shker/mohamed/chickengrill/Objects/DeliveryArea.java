@@ -14,6 +14,11 @@ public class DeliveryArea {
     public DeliveryArea() {
     }
 
+    public DeliveryArea(String areaName, String deliveryCost) {
+        this.areaName = areaName;
+        this.deliveryCost = deliveryCost;
+    }
+
     public DeliveryArea(String areaName, String deliveryCost, String deliveryTime, String minDelivery) {
         this.areaName = areaName;
         this.deliveryCost = deliveryCost;
