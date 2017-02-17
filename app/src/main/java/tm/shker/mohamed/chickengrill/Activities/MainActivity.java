@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity  {
         Picasso.with(this).load(R.drawable.main_activity_background).error(R.mipmap.ic_launcher).into(background);
 
         //init uid
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
+//        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
 
     }
 

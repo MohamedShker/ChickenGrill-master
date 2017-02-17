@@ -28,12 +28,8 @@ public class FullOrder implements Serializable {
     private int calculateSUM() {
         int sum = 0;
         for (MealOrder mealOrder : mealOrders) {
-
             int currMealCost = Integer.parseInt(mealOrder.getOrderedMeal().get(0).getMealCost());
-            int numOfDuplication = mealOrder.getNumOfDuplicationOfTheMeal();
-            int CurrMealOrderTotalCost = currMealCost * numOfDuplication;
-
-            sum += CurrMealOrderTotalCost;
+            sum += currMealCost;
         }
 
         if(withDelivery)

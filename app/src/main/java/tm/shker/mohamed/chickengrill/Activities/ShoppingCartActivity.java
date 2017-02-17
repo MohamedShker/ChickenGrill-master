@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private EditText etPhoneNumber;
     private TextView tvTotalCost , tvdeliveryCost;
     private LinearLayout llAdressWrapper;
-    private CheckBox cbPickUp;
+    private CheckBox cbPickUp , cbSavePhoneNum;
     private String lastChar;
 
 
@@ -46,7 +47,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private ChildEventListener childEventListener;
     private DatabaseReference mealOrdersREF;
 
-    private FullOrder fullOrder = new FullOrder();
+    private FullOrder fullOrder;
     private boolean withDelivery;
 
     @Override
@@ -56,30 +57,37 @@ public class ShoppingCartActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabShoppingCartActivity);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        initFields();
+
+        //init users full order.
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        User user = new User(firebaseUser.getEmail(),firebaseUser.getDisplayName());
+        fullOrder.setUser(user);
+
+        //for receiving the user contact number.
+        etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
+        tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
+        enablePhoneNumFormatter();
+
+        String uid = firebaseUser.getUid();
+        DatabaseReference phoneNumberREF = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber");
+        phoneNumberREF.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String phoneNumber = dataSnapshot.getValue(String.class);
+                if(phoneNumber != null)
+                    etPhoneNumber.setText(phoneNumber);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
-        //init users full order.
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        User user = new User(firebaseUser.getEmail(),firebaseUser.getDisplayName());
-        //fullOrder = new FullOrder();
-        fullOrder.setUser(user);
 
-       initFields();
-
-        etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
-        tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
-        lastChar = " ";
-        enablePhoneNumFormatter();
-
-        withDelivery = true;
-
+        //for receiving the users choice whether he want to pickup the order/ getting it by Delivery.
         tvdeliveryCost = (TextView) findViewById(R.id.tvdeliveryCost);
         llAdressWrapper = (LinearLayout) findViewById(R.id.llAdressWrapper);
         cbPickUp = (CheckBox) findViewById(R.id.cbPickUp);
@@ -102,6 +110,20 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
+        //saving the phone number that the user entered.
+        cbSavePhoneNum = (CheckBox) findViewById(R.id.cbSavePhoneNum);
+        cbSavePhoneNum.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    String phoneNumber = etPhoneNumber.getText().toString();
+                    fullOrder.getUser().setPhoneNumber(phoneNumber);
+                    String uid = firebaseUser.getUid();
+                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber").setValue(phoneNumber);
+                }
+            }
+        });
+
 
 
 
@@ -113,6 +135,20 @@ public class ShoppingCartActivity extends AppCompatActivity {
         adapter = new MealOrderAdapter(mealOrdersSnapshots,this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+
+        //pay onclick listener:
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabShoppingCartActivity);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                if(withDelivery) {
+                    //testMinOrderCost(); //// TODO: 17/02/2017 check if the cost of the full order is more than 70 shekels else throw an error
+                }
+            }
+        });
     }
 
     private void enablePhoneNumFormatter() {
@@ -181,6 +217,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         };
 
+        fullOrder = new FullOrder();
+        withDelivery = true;
+
+        //for formatting the phone number. used in enablePhoneNumFormatter() function.
+        lastChar = " ";
     }
 
     private int calculateSUM() {
