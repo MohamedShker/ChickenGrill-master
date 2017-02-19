@@ -51,6 +51,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private FullOrder fullOrder;
     private boolean withDelivery;
     private String lastChar;
+    int PreviousLength;
+    boolean deleting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,27 +204,30 @@ public class ShoppingCartActivity extends AppCompatActivity {
     }
 
     private void enablePhoneNumFormatter() {
+
         etPhoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 int digits = etPhoneNumber.getText().toString().length();
                 if (digits > 1)
                     lastChar = etPhoneNumber.getText().toString().substring(digits-1);
+                    PreviousLength = s.length();
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int digits = etPhoneNumber.getText().toString().length();
-                if (!lastChar.equals("-")) {
-                    if(digits == 2){
-                        String areaCode = etPhoneNumber.getText().toString();
-                        checkAreaCode(areaCode);
-                    }
-                    else if (digits == 3 || digits == 7) {
-                        etPhoneNumber.append("-");
-                    }
-                    else if(digits == 12){
-                        validatePhoneNumber();
+                deleting = PreviousLength > s.length();
+                if(!deleting) {
+                    int digits = etPhoneNumber.getText().toString().length();
+                    if (!lastChar.equals("-")) {
+                        if (digits == 2) {
+                            String areaCode = etPhoneNumber.getText().toString();
+                            checkAreaCode(areaCode);
+                        } else if (digits == 3 || digits == 7) {
+                            etPhoneNumber.append("-");
+                        } else if (digits == 12) {
+                            validatePhoneNumber();
+                        }
                     }
                 }
             }
