@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import tm.shker.mohamed.chickengrill.Adapters.MealOrderAdapter;
+import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.DeliveryArea;
 import tm.shker.mohamed.chickengrill.Objects.FullOrder;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
@@ -39,7 +41,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private TextView tvTotalCost , tvdeliveryCost;
     private LinearLayout llAdressWrapper;
     private CheckBox cbPickUp , cbSavePhoneNum;
-    private String lastChar;
 
 
     private MealOrderAdapter adapter;
@@ -49,6 +50,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private FullOrder fullOrder;
     private boolean withDelivery;
+    private String lastChar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
         tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
         enablePhoneNumFormatter();
+
 
         String uid = firebaseUser.getUid();
         DatabaseReference phoneNumberREF = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber");
@@ -117,9 +120,9 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     String phoneNumber = etPhoneNumber.getText().toString();
-                    fullOrder.getUser().setPhoneNumber(phoneNumber);
-                    String uid = firebaseUser.getUid();
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber").setValue(phoneNumber);
+                        fullOrder.getUser().setPhoneNumber(phoneNumber);
+                        String uid = firebaseUser.getUid();
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber").setValue(phoneNumber);
                 }
             }
         });
@@ -151,32 +154,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         });
     }
 
-    private void enablePhoneNumFormatter() {
-        etPhoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int digits = etPhoneNumber.getText().toString().length();
-                if (digits > 1)
-                    lastChar = etPhoneNumber.getText().toString().substring(digits-1);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int digits = etPhoneNumber.getText().toString().length();
-                if (!lastChar.equals("-")) {
-                    if (digits == 3 || digits == 7) {
-                        etPhoneNumber.append("-");
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
-
     private void initFields(){
         mealOrdersSnapshots = new ArrayList<DataSnapshot>();
 
@@ -192,10 +169,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    int position = getChildPosition(dataSnapshot.getKey());
-                    mealOrdersSnapshots.set(position, dataSnapshot);
-                    adapter.notifyItemChanged(position, dataSnapshot);
-                    tvTotalCost.setText(String.valueOf(calculateSUM()) + "₪");
+                int position = getChildPosition(dataSnapshot.getKey());
+                mealOrdersSnapshots.set(position, dataSnapshot);
+                adapter.notifyItemChanged(position, dataSnapshot);
+                tvTotalCost.setText(String.valueOf(calculateSUM()) + "₪");
             }
 
             @Override
@@ -222,6 +199,73 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         //for formatting the phone number. used in enablePhoneNumFormatter() function.
         lastChar = " ";
+    }
+
+    private void enablePhoneNumFormatter() {
+        etPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int digits = etPhoneNumber.getText().toString().length();
+                if (digits > 1)
+                    lastChar = etPhoneNumber.getText().toString().substring(digits-1);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int digits = etPhoneNumber.getText().toString().length();
+                if (!lastChar.equals("-")) {
+                    if(digits == 2){
+                        String areaCode = etPhoneNumber.getText().toString();
+                        checkAreaCode(areaCode);
+                    }
+                    else if (digits == 3 || digits == 7) {
+                        etPhoneNumber.append("-");
+                    }
+                    else if(digits == 12){
+                        validatePhoneNumber();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void checkAreaCode(String areaCode) {
+
+        if (areaCode.equals("02") || areaCode.equals("03") || areaCode.equals("04") || areaCode.equals("08") || areaCode.equals("09")){
+            etPhoneNumber.setText("0" + areaCode);
+            etPhoneNumber.setSelection(4);
+        }
+
+        else if(!areaCode.equals("05") && !areaCode.equals("07")){
+            showError("קידומת לא תקינה, נסה שנית",etPhoneNumber);
+            etPhoneNumber.setText("");
+        }
+
+    }
+
+    private void validatePhoneNumber() {
+        String phoneNum = etPhoneNumber.getText().toString();
+        if(phoneNum.replaceAll("\\D", "").length() != 10){
+            //show error
+            showError("המספר שהכנסת לא תקין, נסה שנית.",etPhoneNumber);
+            etPhoneNumber.setText("");
+        }
+    }
+
+    private void showError(String exception, View view) {
+        Snackbar.make(view,
+                exception,
+                Snackbar.LENGTH_INDEFINITE
+        ).setAction("dismiss", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        }).show();
     }
 
     private int calculateSUM() {

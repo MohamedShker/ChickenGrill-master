@@ -37,6 +37,7 @@ public class AboutUsActivity extends AppCompatActivity {
         displayDeliveryAreas();
 
         //social media links
+        // TODO: 19/02/2017 all about social media links.
 
     }
 
