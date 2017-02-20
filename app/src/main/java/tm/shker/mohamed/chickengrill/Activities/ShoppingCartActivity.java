@@ -45,7 +45,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private LinearLayout llAdressWrapper;
     private CheckBox cbPickUp , cbSavePhoneNum;
 
-
     private MealOrderAdapter adapter;
     private ArrayList<DataSnapshot> mealOrdersSnapshots;
     private ChildEventListener childEventListener;
@@ -56,10 +55,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private FullOrder fullOrder;
     private boolean withDelivery;
     private String lastChar;
-    int PreviousLength;
-    boolean deleting;
+    private int PreviousLength;
+    private boolean deleting;
 
-    ArrayAdapter<String> autoCompleteAdapter;
+    private ArrayAdapter<String> autoCompleteAdapter;
 
 
     @Override
@@ -155,8 +154,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 ArrayList<String> addresses = user.getAddresses();
-                for (String address : addresses) {
-                    autoCompleteAdapter.add(address);
+                if(addresses != null && addresses.size() !=0) {
+                    for (String address : addresses) {
+                        autoCompleteAdapter.add(address);
+                    }
                 }
             }
 
