@@ -11,7 +11,7 @@ public class User implements Serializable{
     private String email;
     private String displayName;
     private String phoneNumber;
-    //private ArrayList<String> Addresses; // TODO: 17/02/2017 add a list of addresses for every user, and display them as a Suggestions in the address edit text.
+    private ArrayList<String> addresses; // add a list of addresses for every user, and display them as a Suggestions in the address edit text.
 
     public User() {
     }
@@ -25,6 +25,13 @@ public class User implements Serializable{
         this.email = email;
         this.displayName = email.split("@")[0];
         this.phoneNumber = phoneNumber;
+    }
+
+    public User(String email, String phoneNumber, ArrayList<String> addresses) {
+        this.email = email;
+        this.displayName = email.split("@")[0];
+        this.phoneNumber = phoneNumber;
+        this.addresses = addresses;
     }
 
     public String getEmail() {
@@ -51,11 +58,21 @@ public class User implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
+    public ArrayList<String> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(ArrayList<String> addresses) {
+        this.addresses = addresses;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "email='" + email + '\'' +
                 ", displayName='" + displayName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", addresses=" + addresses +
                 '}';
     }
 }

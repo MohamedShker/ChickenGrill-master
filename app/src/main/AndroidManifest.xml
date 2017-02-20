@@ -43,11 +43,11 @@
         <activity
             android:name=".Activities.AboutUsActivity"
             android:label="@string/action_about_us"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.MealSidesActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activities.tempActivity"
             android:exported="true" />
@@ -59,7 +59,14 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Activities.SettingsActivity"></activity>
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".Activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tm.shker.mohamed.chickengrill.Activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

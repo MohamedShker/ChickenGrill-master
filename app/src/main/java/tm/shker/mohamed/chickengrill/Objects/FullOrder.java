@@ -25,6 +25,13 @@ public class FullOrder implements Serializable {
         this.sum = sum;
     }
 
+    public FullOrder(User user, boolean withDelivery, ArrayList<MealOrder> mealOrders) {
+        this.user = user;
+        this.withDelivery = withDelivery;
+        this.mealOrders = mealOrders;
+        this.sum = calculateSUM();
+    }
+
     private int calculateSUM() {
         int sum = 0;
         for (MealOrder mealOrder : mealOrders) {

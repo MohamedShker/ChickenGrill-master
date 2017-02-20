@@ -11,6 +11,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -39,6 +41,7 @@ import tm.shker.mohamed.chickengrill.R;
 public class ShoppingCartActivity extends AppCompatActivity {
     private EditText etPhoneNumber;
     private TextView tvTotalCost , tvdeliveryCost;
+    private AutoCompleteTextView actvDeliveryAddress;
     private LinearLayout llAdressWrapper;
     private CheckBox cbPickUp , cbSavePhoneNum;
 
@@ -47,12 +50,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private ArrayList<DataSnapshot> mealOrdersSnapshots;
     private ChildEventListener childEventListener;
     private DatabaseReference mealOrdersREF;
+    DatabaseReference userREF;
+    User user;
 
     private FullOrder fullOrder;
     private boolean withDelivery;
     private String lastChar;
     int PreviousLength;
     boolean deleting;
+
+    ArrayAdapter<String> autoCompleteAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,22 +69,25 @@ public class ShoppingCartActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        initViews();
 
         initFields();
 
-        //init users full order.
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        User user = new User(firebaseUser.getEmail(),firebaseUser.getDisplayName());
-        fullOrder.setUser(user);
+        // real time database for recieving mealOrdersSnapshots from curr user
+        updateMealOrders();
+
+        //set adapter to the recyclerView
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvMealOrders);
+        adapter = new MealOrderAdapter(mealOrdersSnapshots,this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
 
         //for receiving the user contact number.
-        etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
-        tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
         enablePhoneNumFormatter();
 
-
-        String uid = firebaseUser.getUid();
-        DatabaseReference phoneNumberREF = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber");
+        //if there is a saved number--> display it.
+        DatabaseReference phoneNumberREF = userREF.child("phoneNumber");
         phoneNumberREF.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,12 +102,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
-
         //for receiving the users choice whether he want to pickup the order/ getting it by Delivery.
-        tvdeliveryCost = (TextView) findViewById(R.id.tvdeliveryCost);
-        llAdressWrapper = (LinearLayout) findViewById(R.id.llAdressWrapper);
-        cbPickUp = (CheckBox) findViewById(R.id.cbPickUp);
-
         cbPickUp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -115,31 +121,50 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
-        //saving the phone number that the user entered.
-        cbSavePhoneNum = (CheckBox) findViewById(R.id.cbSavePhoneNum);
+        //for saving the phone number that the user entered.
         cbSavePhoneNum.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     String phoneNumber = etPhoneNumber.getText().toString();
-                        fullOrder.getUser().setPhoneNumber(phoneNumber);
-                        String uid = firebaseUser.getUid();
-                        FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("phoneNumber").setValue(phoneNumber);
+                    if(phoneNumber.length() == 12) {
+                        if(validatePhoneNumber()) {
+                            userREF.child("phoneNumber").setValue(phoneNumber);
+                        }
+                    }
+                    else{
+                        showError("המספר שהכנסת לא תקין, נסה שנית.",etPhoneNumber);
+                        cbSavePhoneNum.setChecked(false);
+                    }
                 }
             }
         });
 
+        //drop down list for auto complete text view (for addresses):
 
+        //for testing purposes:
+//        ArrayList<String> temp = new ArrayList<>();
+//        temp.add("בית: חיפה רחוב וולפסון דירה 306 כניסה 2.");
+//        temp.add("עבודה: חיפה חוצות המפרץ.");
+//        temp.add("בירת הקרמל.");
+//        temp.add("עבודי דודי בטיזו ברודי");
+//
+//        userREF.child("addresses").setValue(temp);
+        userREF.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                ArrayList<String> addresses = user.getAddresses();
+                for (String address : addresses) {
+                    autoCompleteAdapter.add(address);
+                }
+            }
 
-
-        // real time database for recieving mealOrdersSnapshots from curr user
-        updateMealOrders();
-
-        //set adapter to the recyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvMealOrders);
-        adapter = new MealOrderAdapter(mealOrdersSnapshots,this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+        actvDeliveryAddress.setThreshold(1);
+        actvDeliveryAddress.setAdapter(autoCompleteAdapter);
 
 
         //pay onclick listener:
@@ -147,18 +172,37 @@ public class ShoppingCartActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                if(withDelivery) {
+                //init users full order.
+                fullOrder.setUser(user);
+                fullOrder.setWithDelivery(withDelivery);
+
+                if(fullOrder.isWithDelivery()) {
                     //testMinOrderCost(); //// TODO: 17/02/2017 check if the cost of the full order is more than 70 shekels else throw an error
                 }
             }
         });
     }
 
+    private void initViews() {
+
+        //for receiving the user contact number.
+        etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
+        tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
+
+        //for receiving the users choice whether he want to pickup the order/ getting it by Delivery.
+        tvdeliveryCost = (TextView) findViewById(R.id.tvdeliveryCost);
+        llAdressWrapper = (LinearLayout) findViewById(R.id.llAdressWrapper);
+        cbPickUp = (CheckBox) findViewById(R.id.cbPickUp);
+
+        //for saving the phone number that the user entered.
+        cbSavePhoneNum = (CheckBox) findViewById(R.id.cbSavePhoneNum);
+
+        //drop down list for auto complete text view that displays addresses:
+        actvDeliveryAddress = (AutoCompleteTextView) findViewById(R.id.actvDeliveryAddress);
+    }
+
     private void initFields(){
         mealOrdersSnapshots = new ArrayList<DataSnapshot>();
-
 
         //init my real time ChildEventListener:
         childEventListener = new ChildEventListener() {
@@ -201,6 +245,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         //for formatting the phone number. used in enablePhoneNumFormatter() function.
         lastChar = " ";
+
+        //for auto complete text view:
+        autoCompleteAdapter = new ArrayAdapter<String>(this , android.R.layout.simple_dropdown_item_1line);
+
+        //firebase database references:
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userREF = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
     }
 
     private void enablePhoneNumFormatter() {
@@ -211,14 +262,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 int digits = etPhoneNumber.getText().toString().length();
                 if (digits > 1)
                     lastChar = etPhoneNumber.getText().toString().substring(digits-1);
-                    PreviousLength = s.length();
+                PreviousLength = s.length();
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 deleting = PreviousLength > s.length();
+                int digits = etPhoneNumber.getText().toString().length();
                 if(!deleting) {
-                    int digits = etPhoneNumber.getText().toString().length();
                     if (!lastChar.equals("-")) {
                         if (digits == 2) {
                             String areaCode = etPhoneNumber.getText().toString();
@@ -228,6 +279,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         } else if (digits == 12) {
                             validatePhoneNumber();
                         }
+                    }
+                }
+                else {
+                    if(digits == 2){
+                        etPhoneNumber.setText("");
                     }
                 }
             }
@@ -253,13 +309,16 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     }
 
-    private void validatePhoneNumber() {
+    private boolean validatePhoneNumber() {
+        boolean ans = true;
         String phoneNum = etPhoneNumber.getText().toString();
         if(phoneNum.replaceAll("\\D", "").length() != 10){
             //show error
+            ans = false;
             showError("המספר שהכנסת לא תקין, נסה שנית.",etPhoneNumber);
             etPhoneNumber.setText("");
         }
+        return ans;
     }
 
     private void showError(String exception, View view) {

@@ -41,6 +41,7 @@
                         android:textColor="@color/orange"
                         android:id="@+id/tvMealOrderName"
                         android:text="עסקית בורגר קבב אנגוס"
+                        android:gravity="center"
                         android:textStyle="bold"
                         android:textSize="25dp"/>
 
@@ -54,6 +55,7 @@
                         android:maxLength="170"
                         android:id="@+id/tvMealOrderIngredients"
                         android:textColor="@color/white"
+                        android:gravity="right"
                         android:text="פחית קוקה קולה..בלי מלפפון חמוץ..בלי בצל סגול...ברביקיו...אלף האיים....תפוח אדמה אפוי."/>
 
                 </LinearLayout>
