@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,10 +41,10 @@ import tm.shker.mohamed.chickengrill.R;
 
 public class ShoppingCartActivity extends AppCompatActivity {
     private EditText etPhoneNumber;
-    private TextView tvTotalCost , tvdeliveryCost;
+    private TextView tvTotalCost, tvdeliveryCost;
     private AutoCompleteTextView actvDeliveryAddress;
     private LinearLayout llAdressWrapper;
-    private CheckBox cbPickUp , cbSavePhoneNum;
+    private CheckBox cbPickUp, cbSavePhoneNum;
 
     private MealOrderAdapter adapter;
     private ArrayList<DataSnapshot> mealOrdersSnapshots;
@@ -77,7 +78,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         //set adapter to the recyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvMealOrders);
-        adapter = new MealOrderAdapter(mealOrdersSnapshots,this);
+        adapter = new MealOrderAdapter(mealOrdersSnapshots, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -91,7 +92,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String phoneNumber = dataSnapshot.getValue(String.class);
-                if(phoneNumber != null)
+                if (phoneNumber != null)
                     etPhoneNumber.setText(phoneNumber);
             }
 
@@ -105,13 +106,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
         cbPickUp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     llAdressWrapper.setVisibility(View.GONE);
                     tvdeliveryCost.setText("0₪");
                     withDelivery = false;
                     tvTotalCost.setText(String.valueOf(calculateSUM()) + "₪");
-                }
-                else {
+                } else {
                     llAdressWrapper.setVisibility(View.VISIBLE);
                     tvdeliveryCost.setText("10₪");
                     withDelivery = true;
@@ -124,15 +124,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
         cbSavePhoneNum.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     String phoneNumber = etPhoneNumber.getText().toString();
-                    if(phoneNumber.length() == 12) {
-                        if(validatePhoneNumber()) {
+                    if (phoneNumber.length() == 12) {
+                        if (validatePhoneNumber()) {
                             userREF.child("phoneNumber").setValue(phoneNumber);
                         }
-                    }
-                    else{
-                        showError("המספר שהכנסת לא תקין, נסה שנית.",etPhoneNumber);
+                    } else {
+                        showError("המספר שהכנסת לא תקין, נסה שנית.", etPhoneNumber);
                         cbSavePhoneNum.setChecked(false);
                     }
                 }
@@ -154,7 +153,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 ArrayList<String> addresses = user.getAddresses();
-                if(addresses != null && addresses.size() !=0) {
+                if (addresses != null && addresses.size() != 0) {
                     for (String address : addresses) {
                         autoCompleteAdapter.add(address);
                     }
@@ -162,7 +161,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
         actvDeliveryAddress.setThreshold(1);
         actvDeliveryAddress.setAdapter(autoCompleteAdapter);
@@ -174,10 +174,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //init users full order.
-                fullOrder.setUser(user);
-                fullOrder.setWithDelivery(withDelivery);
-
-                if(fullOrder.isWithDelivery()) {
+               ArrayList<MealOrder> mealOrders = new ArrayList<MealOrder>();
+                for (DataSnapshot dataSnapshot : mealOrdersSnapshots) {
+                    MealOrder mealOrder = dataSnapshot.getValue(MealOrder.class);
+                    mealOrders.add(mealOrder);
+                }
+                fullOrder = new FullOrder(user , withDelivery, mealOrders);
+                Toast.makeText(ShoppingCartActivity.this, String.valueOf(fullOrder.getSum()), Toast.LENGTH_SHORT).show();
+                if (fullOrder.isWithDelivery()) {
                     //testMinOrderCost(); //// TODO: 17/02/2017 check if the cost of the full order is more than 70 shekels else throw an error
                 }
             }
@@ -202,7 +206,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         actvDeliveryAddress = (AutoCompleteTextView) findViewById(R.id.actvDeliveryAddress);
     }
 
-    private void initFields(){
+    private void initFields() {
         mealOrdersSnapshots = new ArrayList<DataSnapshot>();
 
         //init my real time ChildEventListener:
@@ -241,14 +245,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         };
 
-        fullOrder = new FullOrder();
         withDelivery = true;
 
         //for formatting the phone number. used in enablePhoneNumFormatter() function.
         lastChar = " ";
 
         //for auto complete text view:
-        autoCompleteAdapter = new ArrayAdapter<String>(this , android.R.layout.simple_dropdown_item_1line);
+        autoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line);
 
         //firebase database references:
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -262,7 +265,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 int digits = etPhoneNumber.getText().toString().length();
                 if (digits > 1)
-                    lastChar = etPhoneNumber.getText().toString().substring(digits-1);
+                    lastChar = etPhoneNumber.getText().toString().substring(digits - 1);
                 PreviousLength = s.length();
             }
 
@@ -270,7 +273,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 deleting = PreviousLength > s.length();
                 int digits = etPhoneNumber.getText().toString().length();
-                if(!deleting) {
+                if (!deleting) {
                     if (!lastChar.equals("-")) {
                         if (digits == 2) {
                             String areaCode = etPhoneNumber.getText().toString();
@@ -281,9 +284,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             validatePhoneNumber();
                         }
                     }
-                }
-                else {
-                    if(digits == 2){
+                } else {
+                    if (digits == 2) {
                         etPhoneNumber.setText("");
                     }
                 }
@@ -298,13 +300,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private void checkAreaCode(String areaCode) {
 
-        if (areaCode.equals("02") || areaCode.equals("03") || areaCode.equals("04") || areaCode.equals("08") || areaCode.equals("09")){
+        if (areaCode.equals("02") || areaCode.equals("03") || areaCode.equals("04") || areaCode.equals("08") || areaCode.equals("09")) {
             etPhoneNumber.setText("0" + areaCode);
             etPhoneNumber.setSelection(4);
-        }
-
-        else if(!areaCode.equals("05") && !areaCode.equals("07")){
-            showError("קידומת לא תקינה, נסה שנית",etPhoneNumber);
+        } else if (!areaCode.equals("05") && !areaCode.equals("07")) {
+            showError("קידומת לא תקינה, נסה שנית", etPhoneNumber);
             etPhoneNumber.setText("");
         }
 
@@ -313,10 +313,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private boolean validatePhoneNumber() {
         boolean ans = true;
         String phoneNum = etPhoneNumber.getText().toString();
-        if(phoneNum.replaceAll("\\D", "").length() != 10){
+        if (phoneNum.replaceAll("\\D", "").length() != 10) {
             //show error
             ans = false;
-            showError("המספר שהכנסת לא תקין, נסה שנית.",etPhoneNumber);
+            showError("המספר שהכנסת לא תקין, נסה שנית.", etPhoneNumber);
             etPhoneNumber.setText("");
         }
         return ans;
@@ -341,7 +341,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
             sum += currMealCost;
         }
 
-        if(withDelivery)
+        if (withDelivery)
             sum += 10;
 
         return sum;
@@ -349,7 +349,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     private int getChildPosition(String key) {
         for (int i = 0; i < mealOrdersSnapshots.size(); i++) {
-            if(mealOrdersSnapshots.get(i).getKey().equals(key)){
+            if (mealOrdersSnapshots.get(i).getKey().equals(key)) {
                 return i;
             }
         }
@@ -357,7 +357,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         throw new IllegalArgumentException("no index found for this key");
     }
 
-    private void updateMealOrders(){
+    private void updateMealOrders() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
         mealOrdersREF.addChildEventListener(childEventListener);
