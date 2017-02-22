@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -38,10 +37,11 @@ public class AddToCartListener implements View.OnClickListener  {
     @Override
     public void onClick(View v) {
         if(!meal.getMealType().equals("שתיה קלה")) {
-
             Intent intent = new Intent(context, MealSidesActivity.class);
             Bundle args = new Bundle();
-            args.putSerializable(Constants.MEAL_OPJECT, meal);
+            args.putSerializable(Constants.MEAL_OBJECT, meal);
+            args.putSerializable(Constants.MEAL_ORDER_OBJECT, null);
+            args.putString(Constants.MEAL_ORDER_DB_KEY, null);
             intent.putExtras(args);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

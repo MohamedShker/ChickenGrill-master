@@ -1,5 +1,6 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,8 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import tm.shker.mohamed.chickengrill.Adapters.MealOrderAdapter;
-import tm.shker.mohamed.chickengrill.Managers.Constants;
-import tm.shker.mohamed.chickengrill.Objects.DeliveryArea;
 import tm.shker.mohamed.chickengrill.Objects.FullOrder;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
 import tm.shker.mohamed.chickengrill.Objects.User;
@@ -41,9 +38,9 @@ import tm.shker.mohamed.chickengrill.R;
 
 public class ShoppingCartActivity extends AppCompatActivity {
     private EditText etPhoneNumber;
-    private TextView tvTotalCost, tvdeliveryCost;
+    private TextView tvTotalCost, tvDeliveryCost;
     private AutoCompleteTextView actvDeliveryAddress;
-    private LinearLayout llAdressWrapper;
+    private LinearLayout llAddressWrapper;
     private CheckBox cbPickUp, cbSavePhoneNum;
 
     private MealOrderAdapter adapter;
@@ -107,13 +104,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    llAdressWrapper.setVisibility(View.GONE);
-                    tvdeliveryCost.setText("0₪");
+                    llAddressWrapper.setVisibility(View.GONE);
+                    tvDeliveryCost.setText("0₪");
                     withDelivery = false;
                     tvTotalCost.setText(String.valueOf(calculateSUM()) + "₪");
                 } else {
-                    llAdressWrapper.setVisibility(View.VISIBLE);
-                    tvdeliveryCost.setText("10₪");
+                    llAddressWrapper.setVisibility(View.VISIBLE);
+                    tvDeliveryCost.setText("10₪");
                     withDelivery = true;
                     tvTotalCost.setText(String.valueOf(calculateSUM()) + "₪");
                 }
@@ -195,8 +192,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
         tvTotalCost = (TextView) findViewById(R.id.tvTotalCost);
 
         //for receiving the users choice whether he want to pickup the order/ getting it by Delivery.
-        tvdeliveryCost = (TextView) findViewById(R.id.tvdeliveryCost);
-        llAdressWrapper = (LinearLayout) findViewById(R.id.llAdressWrapper);
+        tvDeliveryCost = (TextView) findViewById(R.id.tvdeliveryCost);
+        llAddressWrapper = (LinearLayout) findViewById(R.id.llAdressWrapper);
         cbPickUp = (CheckBox) findViewById(R.id.cbPickUp);
 
         //for saving the phone number that the user entered.
@@ -361,6 +358,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
         mealOrdersREF.addChildEventListener(childEventListener);
+        mealOrdersREF.keepSynced(true);
     }
 
     @Override

@@ -13,6 +13,12 @@ public class Constants {
 
     //constants for MenuFragment
     public static final String MEAL_TYPE = "Meal_Type";
+
     //constant for AddToCartListener
-    public static final String MEAL_OPJECT = "Meal_Opject";
+    public static final String MEAL_OBJECT = "Meal_Object";
+
+    //constant for EditMealOrderListener
+    public static final String MEAL_ORDER_OBJECT = "Meal_Order_Object";
+    public static final String MEAL_ORDER_DB_KEY = "Meal_Order_Db_Key";
+
 }

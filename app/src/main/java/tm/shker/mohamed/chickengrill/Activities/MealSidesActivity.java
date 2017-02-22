@@ -1,13 +1,14 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
-import android.app.Application;
-import android.net.Uri;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -19,10 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +29,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import tm.shker.mohamed.chickengrill.Managers.AppManager;
 import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.Meal;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
@@ -50,7 +46,8 @@ public class MealSidesActivity extends AppCompatActivity {
     private EditText etMealNotes;
     private Button btnAddToCart;
     private Meal mealToDisplay;
-    private String mealType;
+    private MealOrder mealOrderToEdit;
+    private String mealType, mealOrderDBKey;
 
     ArrayList<String> possibleModifications, salads, sides, drinks, sauces;
 
@@ -59,11 +56,16 @@ public class MealSidesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal_sides);
         Bundle bundle = this.getIntent().getExtras();
-        mealToDisplay = (Meal) bundle.getSerializable(Constants.MEAL_OPJECT);
+        mealToDisplay = (Meal) bundle.getSerializable(Constants.MEAL_OBJECT);
+        mealOrderToEdit = (MealOrder) bundle.getSerializable(Constants.MEAL_ORDER_OBJECT);
+        mealOrderDBKey = (String) bundle.getString(Constants.MEAL_ORDER_DB_KEY);
+
+        Log.d(Constants.TAG,mealToDisplay.toString());
+        if(mealOrderToEdit !=null )
+            Log.d(Constants.TAG,mealOrderToEdit.toString());
+
         initViews();
         initMealSides(mealToDisplay);
-
-      //  AppManager app = (AppManager) getApplication();
 
         if(mealType.equals("עסקיות בורגרים") || mealType.equals("עסקיות")) {
             displayMeal();
@@ -77,6 +79,10 @@ public class MealSidesActivity extends AppCompatActivity {
         }
         else if(mealType.equals("קומבינציות")){
             displayCombinationMeal();
+        }
+
+        if(mealOrderToEdit != null){
+            btnAddToCart.setText("עדכן מנה");
         }
 
         btnAddToCart.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +190,34 @@ public class MealSidesActivity extends AppCompatActivity {
             Toast.makeText(this, combinationMealSides.toString(), Toast.LENGTH_LONG).show();
         }
 
-        uploadToDataBase(currMealOrder);
+        //edit meal order scenario:
+        if(mealOrderToEdit != null){
+            updateMealOrderInDataBase(currMealOrder);
+            Intent intent = new Intent(this,ShoppingCartActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+        //add new meal order to cart scenario:
+        else {
+            uploadToDataBase(currMealOrder);
+            onBackPressed();
+        }
+    }
+
+    private void updateMealOrderInDataBase(MealOrder currMealOrder) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference mealOrderREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid).child(mealOrderDBKey);
+        mealOrderREF.setValue(currMealOrder).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MealSidesActivity.this, "השינויים עודכנו בהצלחה", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MealSidesActivity.this, "כישלון בעדכון שינויים, אנא בדוק את חיבור האינטרנט שלך", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private int getSideChosenCoast(String chosen) {
@@ -382,9 +415,6 @@ public class MealSidesActivity extends AppCompatActivity {
         return ans;
     }
 
-
-
-
     private void displayBigMeal(String mealName, String mealCost, String mealURLImage) {
         Picasso.with(this).
                 load(mealURLImage).
@@ -450,7 +480,7 @@ public class MealSidesActivity extends AppCompatActivity {
                 } else {
                     RadioGroup radioGroup = new RadioGroup(this);
                     llMealPM.addView(radioGroup);
-                    radioButtonDislay(possibleModifications, radioGroup);
+                    radioButtonDisplay(possibleModifications, radioGroup);
                 }
                 llMealSidesWrapper.addView(view,j+2);
             }
@@ -476,7 +506,7 @@ public class MealSidesActivity extends AppCompatActivity {
         if (sides.get(1).equals("none")) {
             rlMealSide.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(sides,rgSides);
+            radioButtonDisplay(sides,rgSides);
         }
 
         //display drinks:
@@ -484,7 +514,11 @@ public class MealSidesActivity extends AppCompatActivity {
         if (drinks.get(1).equals("none")) {
             rlMealSidesDrink.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(drinks,rgDrinks);
+            radioButtonDisplay(drinks,rgDrinks);
+        }
+
+        if(mealOrderToEdit != null){
+            checkUserChoices(mealOrderToEdit);
         }
     }
 
@@ -528,13 +562,13 @@ public class MealSidesActivity extends AppCompatActivity {
             if(mealToDisplay.getMealName().contains("חזה עוף")) {
                 RadioGroup radioGroup = new RadioGroup(this);
                 llMealPossibleModifications.addView(radioGroup);
-                radioButtonDislay(possibleModifications, radioGroup);
+                radioButtonDisplay(possibleModifications, radioGroup);
             }
             else if(mealToDisplay.getMealName().contains("שניצל")){
                 tvMealPossibleModificationsTitle.setText("בחר סוג שניצל :");
                 RadioGroup radioGroup = new RadioGroup(this);
                 llMealPossibleModifications.addView(radioGroup);
-                radioButtonDislay(possibleModifications, radioGroup);
+                radioButtonDisplay(possibleModifications, radioGroup);
             }
             else{
                 tvMealPossibleModificationsTitle.setText("שינויים אפשריים במנה :");
@@ -556,7 +590,7 @@ public class MealSidesActivity extends AppCompatActivity {
         if (sides.get(1).equals("none")) {
             rlMealSide.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(sides,rgSides);
+            radioButtonDisplay(sides,rgSides);
         }
 
         //display drinks:
@@ -564,7 +598,7 @@ public class MealSidesActivity extends AppCompatActivity {
         if (drinks.get(1).equals("none")) {
             rlMealSidesDrink.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(drinks,rgDrinks);
+            radioButtonDisplay(drinks,rgDrinks);
         }
 
         //display sauses options:
@@ -573,6 +607,10 @@ public class MealSidesActivity extends AppCompatActivity {
             llMealSauces.setVisibility(View.GONE);
         } else {
             checkBoxDisplay(sauces,llMealSauces);
+        }
+
+        if(mealOrderToEdit != null){
+            checkUserChoices(mealOrderToEdit);
         }
 
     }
@@ -587,13 +625,17 @@ public class MealSidesActivity extends AppCompatActivity {
         } else {
             RadioGroup radioGroup = new RadioGroup(this);
             llMealPossibleModifications.addView(radioGroup);
-            radioButtonDislay(possibleModifications,radioGroup);
+            radioButtonDisplay(possibleModifications,radioGroup);
         }
 
         llMealSalads.setVisibility(View.GONE);
         rlMealSide.setVisibility(View.GONE);
         rlMealSidesDrink.setVisibility(View.GONE);
         llMealSauces.setVisibility(View.GONE);
+
+        if(mealOrderToEdit != null){
+            checkUserChoices(mealOrderToEdit);
+        }
     }
 
     private void displayMeal() {
@@ -621,7 +663,7 @@ public class MealSidesActivity extends AppCompatActivity {
         if (sides.get(1).equals("none")) {
             rlMealSide.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(sides,rgSides);
+            radioButtonDisplay(sides,rgSides);
         }
 
         //display drinks:
@@ -629,7 +671,7 @@ public class MealSidesActivity extends AppCompatActivity {
         if (drinks.get(1).equals("none")) {
             rlMealSidesDrink.setVisibility(View.GONE);
         } else {
-            radioButtonDislay(drinks,rgDrinks);
+            radioButtonDisplay(drinks,rgDrinks);
         }
 
         //display sauses options:
@@ -639,9 +681,13 @@ public class MealSidesActivity extends AppCompatActivity {
         } else {
             checkBoxDisplay(sauces,llMealSauces);
         }
+
+        if(mealOrderToEdit != null){
+            checkUserChoices(mealOrderToEdit);
+        }
     }
 
-    private void radioButtonDislay(ArrayList<String> arrToDisplay,RadioGroup radioGroup){
+    private void radioButtonDisplay(ArrayList<String> arrToDisplay, RadioGroup radioGroup){
         for (int i = 1; i < arrToDisplay.size(); i++) {
             RadioButton radioButton = new RadioButton(this);
             if(i==1){
@@ -686,6 +732,102 @@ public class MealSidesActivity extends AppCompatActivity {
                 Toast.makeText(MealSidesActivity.this, "כישלון בהוספת המנה לסל, אנא בדוק את חיבור האינטרנט שלך", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    //for Edit Meal Order OnClick Listener
+    private void checkUserChoices(MealOrder mealOrder){
+        ArrayList<Meal> orderedMeals = mealOrder.getOrderedMeal();
+        ArrayList<String> possibleModifications, drinks, sides, sauces, salad;
+        String mealNotes;
+        if(!orderedMeals.get(0).getMealType().equals("קומבינציות")){
+            Meal meal = orderedMeals.get(0);
+            MealSides mealSides = meal.getMealSides();
+             possibleModifications = mealSides.getPossibleModifications();
+             drinks = mealSides.getDrinks();
+             sides = mealSides.getSides();
+             sauces = mealSides.getSauces();
+             salad = mealSides.getSalad();
+             mealNotes = mealSides.getMealNotes();
+
+            check(possibleModifications,llMealPossibleModifications);
+            check(drinks,rlMealSidesDrink);
+            check(sides,rlMealSide);
+            check(sauces, llMealSauces);
+            check(salad, llMealSalads);
+
+            etMealNotes.setText(mealNotes);
+        }
+        else{
+            for (int i = 0; i < orderedMeals.size(); i++) {
+                Meal meal = orderedMeals.get(i);
+                MealSides mealSides = meal.getMealSides();
+                possibleModifications = mealSides.getPossibleModifications();
+                drinks = mealSides.getDrinks();
+                sides = mealSides.getSides();
+                salad = mealSides.getSalad();
+                mealNotes = mealSides.getMealNotes();
+                switch (i){
+                    case 0 :
+                        LinearLayout llPossibleModification = (LinearLayout) findViewById(R.id.FIRST_MEAL_POSSIBLE_MODIFICATIONS);
+                        LinearLayout llSaucesAndSalads = (LinearLayout) findViewById(R.id.FIRST_MEAL_SAUCES_AND_SALADS);
+                        check(possibleModifications,llPossibleModification);
+                        check(salad,llSaucesAndSalads);
+                        check(sides,rlMealSide);
+                        check(drinks,rlMealSidesDrink);
+                        etMealNotes.setText(mealNotes);
+                        break;
+                    case 1:
+                        LinearLayout llPossibleModification1 = (LinearLayout) findViewById(R.id.SECOND_MEAL_POSSIBLE_MODIFICATIONS);
+                        LinearLayout llSaucesAndSalads1 = (LinearLayout) findViewById(R.id.SECOND_MEAL_SAUCES_AND_SALADS);
+                        check(possibleModifications,llPossibleModification1);
+                        check(salad,llSaucesAndSalads1);
+                        break;
+                    case 2:
+                        LinearLayout llPossibleModification2 = (LinearLayout) findViewById(R.id.THIRD_MEAL_POSSIBLE_MODIFICATIONS);
+                        LinearLayout llSaucesAndSalads2 = (LinearLayout) findViewById(R.id.THIRD_MEAL_SAUCES_AND_SALADS);
+                        check(possibleModifications,llPossibleModification2);
+                        check(salad,llSaucesAndSalads2);
+                        break;
+                    case 3:
+                        LinearLayout llPossibleModification3 = (LinearLayout) findViewById(R.id.FOURTH_MEAL_POSSIBLE_MODIFICATIONS);
+                        LinearLayout llSaucesAndSalads3 = (LinearLayout) findViewById(R.id.FOURTH_MEAL_SAUCES_AND_SALADS);
+                        check(possibleModifications,llPossibleModification3);
+                        check(salad,llSaucesAndSalads3);
+                        break;
+                }
+            }
+
+        }
+    }
+
+    private void check(ArrayList<String> stringsToCheck, ViewGroup containingLayout){
+        if(stringsToCheck.size() !=0) {
+            for (int i = 0; i < stringsToCheck.size(); i++) {
+                String s = stringsToCheck.get(i);
+                int childCount = containingLayout.getChildCount();
+                for (int j = 0; j < childCount; j++) {
+                    View childAt = containingLayout.getChildAt(j);
+                    if(childAt instanceof CheckBox){
+                        CheckBox cb = (CheckBox) childAt;
+                        if(cb.getText().equals(s)){
+                            Log.d(Constants.TAG,cb.getText().toString());
+                            cb.setChecked(true);
+                        }
+                    }
+                    else if(childAt instanceof RadioGroup){
+                        RadioGroup radioGroup1 = (RadioGroup) childAt;
+                        int childCount1 = radioGroup1.getChildCount();
+                        for (int k = 0; k < childCount1; k++) {
+                            RadioButton rb = (RadioButton) radioGroup1.getChildAt(k);
+                            if(rb.getText().equals(s)){
+                                Log.d(Constants.TAG,rb.getText().toString());
+                                radioGroup1.check(rb.getId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

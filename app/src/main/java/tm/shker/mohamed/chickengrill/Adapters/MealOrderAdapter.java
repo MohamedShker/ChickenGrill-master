@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import tm.shker.mohamed.chickengrill.Managers.EditMealOrderListener;
 import tm.shker.mohamed.chickengrill.Objects.Meal;
 import tm.shker.mohamed.chickengrill.Objects.MealOrder;
 import tm.shker.mohamed.chickengrill.R;
@@ -131,12 +134,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             holder.ibEditMealOrder.setVisibility(View.INVISIBLE);
         }
         else {
-            holder.ibEditMealOrder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: 19/01/2017  return the user to the specific meal side activity with his own choices.
-                }
-            });
+            holder.ibEditMealOrder.setOnClickListener(new EditMealOrderListener(currMealOrder, context , dataSnapshot.getKey()));
         }
 
         holder.tvMealOrderName.setText(currMealOrder.getOrderedMeal().get(0).getMealName());
@@ -148,11 +146,19 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             if (!meal.getMealType().equals("שתיה קלה"))
                 stringBuilder.append(" { " + meal.getMealSides().toString() + " } ");
         }
-        holder.tvMealOrderIngredients.setText(stringBuilder.toString());
+        final String ingredients = stringBuilder.toString();
+        holder.tvMealOrderIngredients.setText(ingredients);
 
         holder.tvMealOrderCost.setText(currMealOrder.getOrderedMeal().get(0).getMealCost() + "₪");
 
         holder.tvNumOfDuplications.setText(String.valueOf(currMealOrder.getNumOfDuplicationOfTheMeal()));
+
+        holder.cvMealOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, ingredients , Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -165,6 +171,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
         FloatingActionButton fabActionAdd, fabActionMinus;
         TextView tvMealOrderName, tvMealOrderIngredients, tvMealOrderCost, tvNumOfDuplications;
         ImageButton ibEditMealOrder;
+        CardView cvMealOrder;
         int numOfDuplication, singleMealCost, currMealOrderCost;
 
         public MealOrderViewHolder(View v) {
@@ -176,6 +183,7 @@ public class MealOrderAdapter extends RecyclerView.Adapter<MealOrderAdapter.Meal
             tvMealOrderCost = (TextView) v.findViewById(R.id.tvMealOrderCost);
             tvNumOfDuplications = (TextView) v.findViewById(R.id.tvNumOfDuplications);
             ibEditMealOrder = (ImageButton) v.findViewById(R.id.ibEditMealOrder);
+            cvMealOrder = (CardView) v.findViewById(R.id.cvMealOrder);
         }
     }
 }
