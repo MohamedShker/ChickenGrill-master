@@ -37,10 +37,10 @@
         <activity
             android:name=".Activities.ShoppingCartActivity"
             android:label="@string/title_activity_shopping_cart"
+            android:parentActivityName=".Activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".Activities.MainActivity"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activities.AboutUsActivity"
             android:label="@string/action_about_us"
@@ -48,6 +48,7 @@
         <activity
             android:name=".Activities.MealSidesActivity"
             android:screenOrientation="portrait"
+            android:label="@string/title_activity_meal_sides"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activities.tempActivity"
@@ -61,9 +62,10 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".Activities.MainActivity">
+            android:name=".Activities.PersonalInformationActivity"
+            android:label="@string/title_activity_personal_information"
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tm.shker.mohamed.chickengrill.Activities.MainActivity" />

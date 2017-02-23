@@ -137,14 +137,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
         //drop down list for auto complete text view (for addresses):
 
-        //for testing purposes:
-//        ArrayList<String> temp = new ArrayList<>();
-//        temp.add("בית: חיפה רחוב וולפסון דירה 306 כניסה 2.");
-//        temp.add("עבודה: חיפה חוצות המפרץ.");
-//        temp.add("בירת הקרמל.");
-//        temp.add("עבודי דודי בטיזו ברודי");
-//
-//        userREF.child("addresses").setValue(temp);
         userREF.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -359,12 +351,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
         mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
         mealOrdersREF.addChildEventListener(childEventListener);
         mealOrdersREF.keepSynced(true);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mealOrdersREF.removeEventListener(childEventListener);
     }
 
     @Override

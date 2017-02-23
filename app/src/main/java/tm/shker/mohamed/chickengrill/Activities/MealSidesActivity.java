@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,10 +58,6 @@ public class MealSidesActivity extends AppCompatActivity {
         mealToDisplay = (Meal) bundle.getSerializable(Constants.MEAL_OBJECT);
         mealOrderToEdit = (MealOrder) bundle.getSerializable(Constants.MEAL_ORDER_OBJECT);
         mealOrderDBKey = (String) bundle.getString(Constants.MEAL_ORDER_DB_KEY);
-
-        Log.d(Constants.TAG,mealToDisplay.toString());
-        if(mealOrderToEdit !=null )
-            Log.d(Constants.TAG,mealOrderToEdit.toString());
 
         initViews();
         initMealSides(mealToDisplay);
@@ -193,9 +188,7 @@ public class MealSidesActivity extends AppCompatActivity {
         //edit meal order scenario:
         if(mealOrderToEdit != null){
             updateMealOrderInDataBase(currMealOrder);
-            Intent intent = new Intent(this,ShoppingCartActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            onBackPressed();
         }
         //add new meal order to cart scenario:
         else {
@@ -810,7 +803,6 @@ public class MealSidesActivity extends AppCompatActivity {
                     if(childAt instanceof CheckBox){
                         CheckBox cb = (CheckBox) childAt;
                         if(cb.getText().equals(s)){
-                            Log.d(Constants.TAG,cb.getText().toString());
                             cb.setChecked(true);
                         }
                     }
@@ -820,7 +812,6 @@ public class MealSidesActivity extends AppCompatActivity {
                         for (int k = 0; k < childCount1; k++) {
                             RadioButton rb = (RadioButton) radioGroup1.getChildAt(k);
                             if(rb.getText().equals(s)){
-                                Log.d(Constants.TAG,rb.getText().toString());
                                 radioGroup1.check(rb.getId());
                             }
                         }

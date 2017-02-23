@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +19,18 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import tm.shker.mohamed.chickengrill.Adapters.ViewPagerAdapter;
 import tm.shker.mohamed.chickengrill.Fragments.MenuFragment;
+import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.User;
 import tm.shker.mohamed.chickengrill.R;
 
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity  {
     private ImageView background;
     private String uid;
     private DatabaseReference mealOrdersREF;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,32 +86,60 @@ public class MainActivity extends AppCompatActivity  {
         background = (ImageView)findViewById(R.id.ivMainActivityBackground);
         Picasso.with(this).load(R.drawable.main_activity_background).error(R.mipmap.ic_launcher).into(background);
 
-        //init uid
-//        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        mealOrdersREF = FirebaseDatabase.getInstance().getReference().child("MealOrders").child(uid);
-
     }
 
     private void testLogin() {
-        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser!=null){
-                    User currUser = new User(currentUser.getEmail());
+                    User user = new User(currentUser.getEmail());
                     Toast.makeText(MainActivity.this, "Hello, "
-                                    + currUser.getDisplayName(),
+                                    + user.getDisplayName(),
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Intent intent = new Intent(MainActivity.this,
                             LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
             }
-        });
+        };
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
+    }
+
+//    private User getUserFromDB(@NonNull FirebaseUser currentUser) {
+//        String uid = currentUser.getUid();
+//        Log.d(Constants.TAG,uid);
+//        DatabaseReference userREF = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+//        userREF.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                user = dataSnapshot.getValue(User.class);
+//                if(user != null) {
+//                    Log.d(Constants.TAG, user.toString());
+//                }
+//                else {
+//                    Log.d(Constants.TAG,"USER IS NULL!!!");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        return user;
+//    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -123,6 +158,8 @@ public class MainActivity extends AppCompatActivity  {
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_settings){
+            Intent intent = new Intent(this, PersonalInformationActivity.class);
+            startActivity(intent);
             return true;
         }
 

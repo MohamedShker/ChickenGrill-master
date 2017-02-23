@@ -61,8 +61,6 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callBackManager;
     private TextInputLayout emailWrapper;
     private TextInputLayout passWrapper;
-    private AppManager appManager;//for initiating the user level attrbute mealOrderIndex(used in meal sides activity to save meal orders to firbase dataBase.
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +79,6 @@ public class LoginActivity extends AppCompatActivity {
         prepareGoogleBTN();
         Picasso.with(this).load(R.drawable.chicken_gril_logo).error(R.mipmap.ic_launcher).into(logo);
 
-        //init index to 0 for indexing meal order data and saving it in firebase database
-        appManager = (AppManager) getApplication();
     }
 
     private void prepareFacebookBTN() {
