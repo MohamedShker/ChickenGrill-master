@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="a5f1c4a76cf2a81cded1b3f41e778c46a5e4e725">
+        sha1="8fa1e9544ffb96ada5e09070a80baf26f1654d40">
         <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_353fb7e1b3d178d9d4a14b2b98ca6786b3977288.jar" />
     </item>
     <item
@@ -133,7 +133,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="8195cb2eb88f1d1651db7a68b91a4914d26dc33f">
+        sha1="75c895a96c4a56582e06efa2707624a83eeb9dac">
         <dex dex="C:\Users\mohamed\AndroidStudioProjects\ChickenGrill-master\app\build\intermediates\pre-dexed\debug\instant-run_a992f3970b61f4786644973f1e12f887e13fce0a.jar" />
     </item>
     <item

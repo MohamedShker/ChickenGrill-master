@@ -117,6 +117,13 @@
                     android:layoutDirection="ltr"
                     android:orientation="vertical">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
+
                     <CheckBox
                         android:id="@+id/cbPickUp"
                         android:layout_width="match_parent"
@@ -149,6 +156,14 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
+
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -177,6 +192,14 @@
                         android:text="שמור מספר טלפון זה לשימוש עתידי"
                         android:textSize="20sp"
                         android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"/>
+
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>

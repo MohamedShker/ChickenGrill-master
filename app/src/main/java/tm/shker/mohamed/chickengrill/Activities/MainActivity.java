@@ -1,8 +1,15 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -38,9 +45,10 @@ public class MainActivity extends AppCompatActivity  {
     private ViewPager viewPager;
     private TabLayout tabs;
     private ImageView background;
-    private String uid;
-    private DatabaseReference mealOrdersREF;
+//    private String uid;
+//    private DatabaseReference mealOrdersREF;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +57,50 @@ public class MainActivity extends AppCompatActivity  {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabMainActivity);
+        fab = (FloatingActionButton) findViewById(R.id.fabMainActivity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),ShoppingCartActivity.class);
-                startActivity(intent);
+                Bundle scaleBundle = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    scaleBundle = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight()).toBundle();
+                    startActivity(intent, scaleBundle);
+                }
+                else {
+                    startActivity(intent);
+                }
             }
         });
 
         /*added---------------------------------------------------*/
         testLogin();
+
+        Intent intent = getIntent();
+        String iCameBackFrom = intent.getStringExtra(Constants.I_CAME_BACK_FROM);
+
+        //if we came back from meal sides activity --> do animation ->>
+        if(iCameBackFrom != null) {
+            if (iCameBackFrom.equals("MealSidesActivity")) {
+                ObjectAnimator rotateAnimation = ObjectAnimator.ofFloat(fab, View.ROTATION, 360);
+                rotateAnimation.setDuration(400);
+                rotateAnimation.setRepeatCount(1);
+                rotateAnimation.setRepeatMode(ValueAnimator.REVERSE);
+
+                PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 2);
+                PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 2);
+                ObjectAnimator scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(fab, pvhX, pvhY);
+                scaleAnimation.setDuration(400);
+                scaleAnimation.setRepeatCount(1);
+                scaleAnimation.setRepeatMode(ValueAnimator.REVERSE);
+
+
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.play(rotateAnimation).with(scaleAnimation);
+                animatorSet.setStartDelay(200);
+                animatorSet.start();
+            }
+        }
 
         //set adapter to the viewpager
         ArrayList<Fragment> myFrags = new ArrayList<Fragment>();

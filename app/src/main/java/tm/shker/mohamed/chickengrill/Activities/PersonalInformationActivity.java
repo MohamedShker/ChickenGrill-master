@@ -1,7 +1,12 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,18 +18,23 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tm.shker.mohamed.chickengrill.Managers.Constants;
 import tm.shker.mohamed.chickengrill.Objects.User;
@@ -32,6 +42,7 @@ import tm.shker.mohamed.chickengrill.R;
 
 public class PersonalInformationActivity extends AppCompatActivity {
     EditText etPIAPhoneNumber, etPIAHomeAddress, etPIAWorkAddress, etPIARandomAddress, etPIANickName;
+    ImageView ivPIAPhoto;
     String lastChar, uid;
     private int PreviousLength;
     private boolean deleting;
@@ -67,9 +78,21 @@ public class PersonalInformationActivity extends AppCompatActivity {
             }
         });
 
+
+//        //display photo for facebook and google users:
+//        List<? extends UserInfo> providerData = FirebaseAuth.getInstance().getCurrentUser().getProviderData();
+//        for (UserInfo profile : providerData) {
+//            if(profile.getProviderId().equals("facebook.com")) {
+//                String facebookuid = profile.getUid();
+//                String photoUrl = "https://graph.facebook.com/" + facebookuid + "/picture?height=500";
+//                Picasso.with(this).load(photoUrl).into(ivPIAPhoto);
+//            }
+//            else if(profile.getProviderId().equals("google.com")){
+//                String s = profile.getPhotoUrl().toString();
+//                Picasso.with(this).load(s).into(ivPIAPhoto);
+//            }
+//        }
     }
-
-
 
     private void initViews() {
         etPIAPhoneNumber = (EditText) findViewById(R.id.etPIAPhoneNumber);
@@ -77,6 +100,7 @@ public class PersonalInformationActivity extends AppCompatActivity {
         etPIAWorkAddress = (EditText) findViewById(R.id.etPIAWorkAddress);
         etPIARandomAddress = (EditText) findViewById(R.id.etPIARandomAddress);
         etPIANickName = (EditText) findViewById(R.id.etPIANickName);
+        ivPIAPhoto = (ImageView) findViewById(R.id.ivPIAPhoto);
 
     }
 
@@ -149,6 +173,16 @@ public class PersonalInformationActivity extends AppCompatActivity {
         userREF.child("addresses").setValue(addresses).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(ivPIAPhoto, View.ALPHA,0);
+                alphaAnimation.setRepeatCount(1);
+                alphaAnimation.setDuration(800);
+                alphaAnimation.setRepeatMode(ValueAnimator.REVERSE);
+                alphaAnimation.start();
+
+
+//                AnimatorSet animatorSet = new AnimatorSet();
+//                animatorSet.play(alphaAnimation);
+
                 Toast.makeText(PersonalInformationActivity.this, "הפרטים נשמרו בהצלחה", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {

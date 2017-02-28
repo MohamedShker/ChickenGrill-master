@@ -12,13 +12,17 @@ public class Constants {
     public static final int RC_GOOGLE_SIGN_IN = 1;
 
     //constants for MenuFragment
-    public static final String MEAL_TYPE = "Meal_Type";
+    public static final String MEAL_TYPE = "MEAL_TYPE";
 
     //constant for AddToCartListener
-    public static final String MEAL_OBJECT = "Meal_Object";
+    public static final String MEAL_OBJECT = "MEAL_OBJECT";
 
     //constant for EditMealOrderListener
-    public static final String MEAL_ORDER_OBJECT = "Meal_Order_Object";
-    public static final String MEAL_ORDER_DB_KEY = "Meal_Order_Db_Key";
+    public static final String MEAL_ORDER_OBJECT = "MEAL_ORDER_OBJECT";
+    public static final String MEAL_ORDER_DB_KEY = "MEAL_ORDER_DB_KEY";
+
+    //constant for animation purpose
+    public static final String I_CAME_BACK_FROM = "I_CAME_BACK_FROM";
+
 
 }

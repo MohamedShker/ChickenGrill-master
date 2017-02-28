@@ -1,7 +1,10 @@
 package tm.shker.mohamed.chickengrill.Activities;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -127,6 +130,7 @@ public class MealSidesActivity extends AppCompatActivity {
 
         //add to cart button
         btnAddToCart = (Button) findViewById(R.id.btnAddToCart);
+
     }
 
     private void AddToCart() {
@@ -148,7 +152,6 @@ public class MealSidesActivity extends AppCompatActivity {
             orderdMealSides = getMeal();
             orderedMeal.setMealSides(orderdMealSides);
             currMealOrder.getOrderedMeal().add(orderedMeal);
-            Toast.makeText(this, orderdMealSides.toString(), Toast.LENGTH_SHORT).show();
         }
         else if(mealType.equals("תוספות")){
             orderdMealSides = getSide();
@@ -160,14 +163,11 @@ public class MealSidesActivity extends AppCompatActivity {
 
             orderedMeal.setMealSides(orderdMealSides);
             currMealOrder.getOrderedMeal().add(orderedMeal);
-            Toast.makeText(this, orderdMealSides.toString(), Toast.LENGTH_SHORT).show();
-
         }
         else if( mealType.equals("מנות בג'בטה") || mealType.equals("מנות בבגט")){
             orderdMealSides = getBagetMeal();
             orderedMeal.setMealSides(orderdMealSides);
             currMealOrder.getOrderedMeal().add(orderedMeal);
-            Toast.makeText(this, orderdMealSides.toString(), Toast.LENGTH_SHORT).show();
         }
         else if(mealType.equals("קומבינציות")){
             combinationMealSides = getCombinationMeal();
@@ -182,7 +182,6 @@ public class MealSidesActivity extends AppCompatActivity {
                 combinationMeals.add(orderedCombinationMeal);
             }
             currMealOrder.setOrderedMeal(combinationMeals);
-            Toast.makeText(this, combinationMealSides.toString(), Toast.LENGTH_LONG).show();
         }
 
         //edit meal order scenario:
@@ -193,7 +192,10 @@ public class MealSidesActivity extends AppCompatActivity {
         //add new meal order to cart scenario:
         else {
             uploadToDataBase(currMealOrder);
-            onBackPressed();
+            Intent intent = new Intent(this,MainActivity.class);
+            intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(Constants.I_CAME_BACK_FROM,"MealSidesActivity");
+            startActivity(intent);
         }
     }
 
